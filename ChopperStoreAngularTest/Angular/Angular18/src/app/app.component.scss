@@ -1,0 +1,117 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.shadow {
+  box-shadow: 0 2px 15px 2px grey !important;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.semibold {
+    font-weight: 500;
+}
+
+.spacer1 {
+  flex: 0.05 1 auto;
+  }
+
+.spacer2 {
+  flex: 0.05 2 auto;
+}
+
+.spacer3 {
+  flex: 0.3 1 auto
+}
+
+html {
+  font-size: 62.5%;
+}
+
+.pink {
+  background-color: #D9697D;
+}
+
+.gray {
+  color: #828282;
+}
+
+.column {
+  display: table-cell;
+  float: left;
+  width: 45%;
+  padding: 10px;
+}
+
+.row:after {
+  clear: both;
+  display: flex;
+  flex-direction: row;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.container img {
+  width: 100%;
+}
+
+.container .btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #D9697D;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.container .btn:hover {
+  background-color: black;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-item-left {
+  padding: 10px;
+  flex: 45%;
+
+}
+
+.flex-item-right {
+  padding: 10px;
+  flex: 50%;
+}
+
+@media (max-width: 900px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,6 @@
+@ChopperStoreAngularTest_HostAddress = http://localhost:5036
+
+GET {{ChopperStoreAngularTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

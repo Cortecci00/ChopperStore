@@ -1,0 +1,15 @@
+<div style="text-align: center; margin-top: 4em; margin-right: 20em; margin-left: 20em;">
+  <p class="semibold" style="font-family:Calibri; font-size: 36px"> Inicia sesión</p>
+</div>
+
+<mat-form-field>
+  <mat-label>Enter your password</mat-label>
+  <input matInput [type]="hide() ? 'password' : 'text'" />
+  <button mat-icon-button
+          matSuffix
+          (click)="clickEvent($event)"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide()">
+    <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+  </button>
+</mat-form-field>
