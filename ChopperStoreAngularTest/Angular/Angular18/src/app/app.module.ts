@@ -31,7 +31,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     CartComponent,
     UsComponent,
     ContactComponent,
-    RecommendationComponent
+    RecommendationComponent,
   ],
   imports: [
     MatFormFieldModule,
