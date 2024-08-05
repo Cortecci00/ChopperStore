@@ -1,1 +1,61 @@
-<p>register works!</p>
+<div style="text-align: center; margin-bottom: 20px; margin-top: 4em; margin-right: 20em; margin-left: 20em;">
+  <p class="semibold" style="font-family:Calibri; font-size: 36px"> Registrate </p>
+</div>
+
+<div style="margin-top:20px" class="container">
+  <div class="line"><mat-divider></mat-divider></div>
+
+  <div class="line"><mat-divider></mat-divider></div>
+</div>
+
+<form style="margin-top:20px" class="example-form">
+  <p class="semibold">Usuario</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
+    <input style="color: #828282" matInput/>
+  </mat-form-field>
+  <p class="semibold">Email</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <mat-label style="color: #828282">Ingresá tu email</mat-label>
+    <input style="color: #828282" matInput
+           [formControl]="email"
+           (blur)="updateErrorMessage()"
+           required />
+    @if (email.invalid) {
+    <mat-error>{{errorMessage()}}</mat-error>
+    }
+  </mat-form-field>
+  <p class="semibold">Contraseña</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <mat-label style="color: #828282">Ingresá tu contraseña</mat-label>
+    <input style="color: #828282" matInput [type]="hide() ? 'password' : 'text'" />
+    <button mat-icon-button
+            matSuffix
+            (click)="clickEvent($event)"
+            [attr.aria-label]="'Ocultar contraseña'"
+            [attr.aria-pressed]="hide()">
+
+      <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+  </mat-form-field>
+  <p class="semibold">Repetir contraseña</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <mat-label style="color: #828282">Ingresá tu contraseña</mat-label>
+    <input style="color: #828282" matInput [type]="hide() ? 'password' : 'text'" />
+    <button mat-icon-button
+            matSuffix
+            (click)="clickEvent($event)"
+            [attr.aria-label]="'Ocultar contraseña'"
+            [attr.aria-pressed]="hide()">
+
+      <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+  </mat-form-field>
+  <button style="margin-top:20px; background-color: #D9697D; color: white; " class="btn" mat-flat-button>Crear cuenta</button>
+  <div class="ltxt">
+    <a style="margin-top: 10px">¿Ya tenés una cuenta? Iniciá sesión</a>
+  </div>
+</form>
+
+
+
