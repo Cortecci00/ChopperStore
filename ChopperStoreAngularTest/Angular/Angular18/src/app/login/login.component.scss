@@ -6,19 +6,77 @@
   font-weight: 500;
 }
 
-.example-container mat-form-field + mat-form-field {
-  margin-left: 8px;
+
+.center {
+  margin: auto;
+  width: 50%;
+  border: 1px solid grey;
+  padding: 10px;
 }
 
-.example-right-align {
-  text-align: right;
+.example-form {
+  margin: auto;
+  min-width: 150px;
+  max-width: 300px;
+  width: 50%;
 }
 
-input.example-right-align::-webkit-outer-spin-button,
-input.example-right-align::-webkit-inner-spin-button {
+.example-full-width {
+  width: 100%;
+}
+
+.container {
+  width: 20%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-left: 40%;
+  margin-right: 40%;
+}
+
+.line {
+  flex: 1;
+}
+
+.text {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.btn {
+  border-radius: 10px;
+  min-height: 50px;
+  min-width: 300px;
+}
+
+.google {
+    display: flex;
+    justify-content: center;
+}
+
+.g_id_signin {
   display: none;
 }
 
-input.example-right-align {
-  -moz-appearance: textfield;
+.element {
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ltxt {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: red !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: red !important;
 }

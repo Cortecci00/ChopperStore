@@ -3,3 +3,16 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+// Manipulate initial background color
+
+.mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 28px;
+}
+
+.mdc-text-field--focused .mdc-notched-outline > * {
+  border-color: #828282 !important;
+}
+
+.mdc-text-field--invalid .mdc-notched-outline > * {
+  border-color: red !important;
+}

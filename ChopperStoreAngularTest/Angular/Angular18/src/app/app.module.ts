@@ -9,7 +9,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -36,6 +37,8 @@ import { RecommendationComponent } from './recommendation/recommendation.compone
     RecommendationComponent,
   ],
   imports: [
+    ReactiveFormsModule,
+    FormsModule,
     MatInputModule,
     MatFormFieldModule,
     IconModule,
