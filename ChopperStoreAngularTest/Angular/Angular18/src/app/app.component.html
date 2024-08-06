@@ -1,51 +1,57 @@
-<mat-toolbar style="min-height: 100px; background-color: #D9697D;" class="shadow">
-  <span class="spacer1"></span>
-  <img width="120" height="120" src="/chopper-logotransparente.png" />
-  <span class="example-spacer"></span>
-  <span class="html" style="font-family:Calibri">Login / Register</span>
-  <span class="spacer1"></span>
-</mat-toolbar>
+<header>
+  <mat-toolbar style="min-height: 100px; background-color: #D9697D;" class="shadow">
+    <span class="spacer1"></span>
+    <img width="120" height="120" src="/chopper-logotransparente.png" />
+    <span class="example-spacer"></span>
+    <span class="html" style="font-family:Calibri">Login / Register</span>
+    <span class="spacer1"></span>
+  </mat-toolbar>
+</header>
 
-<router-outlet></router-outlet>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>
 
-<mat-toolbar fullscreen style="min-height: 220px; margin-top: 4em; background-color: #D9697D;" class="shadow">
-  <span class="spacer1"></span>
-  <div style="text-align:center; color:white">
-    <img width="120" height="120" src="/chopper-logoblanco.png" />
-    <div></div>
-    <p>Nuestras redes</p>
-    <a href="https://www.facebook.com/ChopperStoreCS" target="_blank">
-      <button mat-icon-button class="material-icon" aria-label="Facebook button">
-        <mat-icon>facebook</mat-icon>
-      </button>
-    </a>
-    <a href="https://www.instagram.com/chopperstorecsgo/" target="_blank">
-      <button mat-icon-button svg class="material-icon" aria-label="Facebook button">
-      <svg cIcon name="cibInstagram" size="xs" title="Numbered List Icon"></svg>
-      </button>
-    </a>
-  </div>
+<footer>
+  <mat-toolbar style="min-height: 220px; margin-top: 4em; background-color: #D9697D;" class="shadow">
+    <span class="spacer1"></span>
+    <div style="text-align:center; color:white">
+      <img width="120" height="120" src="/chopper-logoblanco.png" />
+      <div></div>
+      <p>Nuestras redes</p>
+      <a href="https://www.facebook.com/ChopperStoreCS" target="_blank">
+        <button mat-icon-button class="material-icon" aria-label="Facebook button">
+          <mat-icon>facebook</mat-icon>
+        </button>
+      </a>
+      <a href="https://www.instagram.com/chopperstorecsgo/" target="_blank">
+        <button mat-icon-button svg class="material-icon" aria-label="Facebook button">
+        <svg cIcon name="cibInstagram" size="xs" title="Numbered List Icon"></svg>
+        </button>
+      </a>
+    </div>
 
-  <span class="example-spacer"></span>
+    <span class="example-spacer"></span>
 
-  <div style="font-size:70%">
-    <p style="color:white">Accesos</p>
-    <p style="color:#454545">Mi cuenta</p>
-    <p style="color:#454545">Carrito</p>
-    <p style="color:#454545">Contacto</p>
-  </div>
+    <div style="font-size:70%">
+      <p style="color:white">Accesos</p>
+      <p style="color:#454545">Mi cuenta</p>
+      <p style="color:#454545">Carrito</p>
+      <p style="color:#454545">Contacto</p>
+    </div>
 
-  <span class="spacer3"></span>
+    <span class="spacer3"></span>
 
-  <div style="font-size:70%">
-    <p style="color:white">Skins</p>
-    <p style="color:#454545">Rifles</p>
-    <p style="color:#454545">Cuchillos</p>
-    <p style="color:#454545">Guantes</p>
-  </div>
+    <div style="font-size:70%">
+      <p style="color:white">Skins</p>
+      <p style="color:#454545">Rifles</p>
+      <p style="color:#454545">Cuchillos</p>
+      <p style="color:#454545">Guantes</p>
+    </div>
 
-  <span class="spacer1"></span>
-</mat-toolbar>
+    <span class="spacer1"></span>
+  </mat-toolbar>
+ </footer>
 
 
 
