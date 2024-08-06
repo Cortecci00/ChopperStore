@@ -11,3 +11,40 @@
     margin-right:35%;
     margin-left:5%;
 }
+
+.img {
+  width: 30%;
+  margin-left: 5%;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-item-left {
+  padding: 10px;
+  flex: 50%;
+  margin-left: 5%;
+}
+
+.flex-item-right {
+  padding: 10px;
+  flex: 30%;
+  margin-left: 10%;
+}
+
+@media (max-width: 1200px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
+
+img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  vertical-align: middle;
+  margin-top: 52px;
+}
