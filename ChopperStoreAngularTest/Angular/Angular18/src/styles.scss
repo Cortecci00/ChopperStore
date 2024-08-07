@@ -16,7 +16,7 @@ app-root {
 // Manipulate initial background color
 
 .mdc-text-field--outlined {
-  --mdc-outlined-text-field-container-shape: 28px;
+  --mdc-outlined-text-field-container-shape: 10px;
 }
 
 .mdc-text-field--focused .mdc-notched-outline > * {
@@ -25,5 +25,9 @@ app-root {
 
 .mdc-text-field--invalid .mdc-notched-outline > * {
   border-color: red !important;
+}
+
+.mdc-text-field {
+  padding: 0px;
 }
 

@@ -1,0 +1,114 @@
+.bold {
+  font-weight: 700;
+}
+
+.semibold {
+  font-weight: 500;
+}
+
+.col {
+  width: 60%;
+  margin-right: 35%;
+  margin-left: 5%;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-item-left {
+  padding: 10px;
+  flex: 45%;
+  margin-left: 5%;
+}
+
+.flex-item-right {
+  padding: 10px;
+  flex: 45%;
+  margin-right: 5%;
+}
+
+@media (max-width: 1200px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
+
+.img {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.imgsettings {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+}
+
+.shadow {
+  box-shadow: 0 2px 15px 2px grey !important;
+}
+
+.btn {
+  border-radius: 10px;
+  min-height: 50px;
+  min-width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.flex-item-left-input {
+  flex: 47%;
+}
+
+.flex-item-right-input {
+  flex: 47%;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 100%;
+  width: 100%;
+}
+
+.example-full-width{
+  width: 100%;
+}
+
+.example-full-width-txt {
+  width: 100%;
+  height: 300px;
+}
+
+.container {
+    display:flex;
+    justify-content: flex-start;
+    width:100%
+}
+
+.space {
+    flex: 6%
+}
+
+.btncontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.p {
+  background-color: #D9697D;
+  padding: 25px;
+  color: white;
+  border-radius: 10px;
+}
+
+textarea {
+  resize: none;
+}
