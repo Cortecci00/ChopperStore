@@ -11,6 +11,7 @@ import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -37,6 +38,7 @@ import { RecommendationComponent } from './recommendation/recommendation.compone
     RecommendationComponent,
   ],
   imports: [
+    MatCardModule,
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
