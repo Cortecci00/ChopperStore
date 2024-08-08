@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -23,6 +24,7 @@ import { CartComponent } from './cart/cart.component';
 import { UsComponent } from './us/us.component';
 import { ContactComponent } from './contact/contact.component';
 import { RecommendationComponent } from './recommendation/recommendation.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -36,8 +38,10 @@ import { RecommendationComponent } from './recommendation/recommendation.compone
     UsComponent,
     ContactComponent,
     RecommendationComponent,
+    ProfileComponent,
   ],
   imports: [
+    MatGridListModule,
     MatCardModule,
     ReactiveFormsModule,
     FormsModule,
