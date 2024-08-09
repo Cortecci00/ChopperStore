@@ -1,7 +1,3 @@
-.example-spacer {
-  flex: 1 1 auto;
-}
-
 .shadow {
   box-shadow: 0 2px 15px 2px grey !important;
 }
@@ -14,18 +10,6 @@
   font-weight: 500;
 }
 
-.spacer1 {
-  flex: 0.05 1 auto;
-}
-
-.spacer2 {
-  flex: 0.05 2 auto;
-}
-
-.spacer3 {
-  flex: 0.3 1 auto
-}
-
 html {
   font-size: 62.5%;
 }
@@ -36,16 +20,6 @@ html {
 
 .gray {
   color: #828282;
-}
-
-
-.container {
-  position: relative;
-  width: 100%;
-}
-
-.container img {
-  width: 100%;
 }
 
 .container .btn:hover {
@@ -104,3 +78,57 @@ html {
 .example-full-width {
 }
 
+
+
+table {
+  width: 100%;
+}
+
+.mat-column-name {
+  flex: 0 0 20%;
+}
+
+.olakase {
+  display:flex;
+  flex-direction:column;
+}
+
+.cont{
+    display:flex;
+    margin-left: 5%;
+    margin-right:5%;
+}
+
+mat-paginator {
+  background-color: white;
+  color: black;
+}
+
+::ng-deep .mat-mdc-paginator-navigation-previous .mat-mdc-paginator-icon,
+::ng-deep .mat-mdc-paginator-navigation-next .mat-mdc-paginator-icon,
+::ng-deep .mat-mdc-paginator-navigation-last .mat-mdc-paginator-icon,
+::ng-deep .mat-mdc-paginator-navigation-first .mat-mdc-paginator-icon {
+  fill: black;
+}
+
+::ng-deep .mat-paginator-page-size {
+  ::ng-deep .mat-select-value { // this is to change color of page size text in mat paginator
+    color: orange !important;
+  }
+
+  ::ng-deep .mat-select-trigger { // this is to change color of page size text in mat paginator
+    color: orange !important;
+  }
+
+  ::ng-deep .mat-select-arrow { // this is to change color of arrow beside pagesize in mat paginator
+    color: orange !important;
+  }
+}
+
+::ng-deep .mat-select-value {
+  fill: white !important;
+}
+
+::ng-deep #mat-select-0 {
+    color:black;
+}

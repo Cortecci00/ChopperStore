@@ -43,19 +43,35 @@
 </div>
 
 <h1 class="bold" style="font-family:Calibri; text-align:center; margin-top:2em"> Historial de compras</h1>
-<div style="margin-top:4em; border-radius:10px;" class="flex-container shadow">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
-    @for (column of columns; track column) {
-    <ng-container [matColumnDef]="column.columnDef">
-      <th mat-header-cell *matHeaderCellDef>
-        {{column.header}}
-      </th>
-      <td mat-cell *matCellDef="let row">
-        {{column.cell(row)}}
-      </td>
-    </ng-container>
-    }
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+<div>
+  <div style="margin-top:4em; border-radius:10px; padding:24px; margin-left:5%; margin-right:5%; margin-bottom:4em" class="mat-elevation-z8 shadow">
+    <table mat-table [dataSource]="dataSource" style="background-color:white">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Name </th>
+        <td style="color:black" mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="price">
+        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Price </th>
+        <td style="color:black" mat-cell *matCellDef="let element"> {{element.price}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="date">
+        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Date </th>
+        <td style="color:black" mat-cell *matCellDef="let element"> {{element.date}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-divider></mat-divider>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div>
 </div>

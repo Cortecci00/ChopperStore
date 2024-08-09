@@ -15,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule,MatPaginator } from '@angular/material/paginator'
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -43,6 +44,8 @@ import { ProfileComponent } from './profile/profile.component';
     ProfileComponent,
   ],
   imports: [
+    MatPaginatorModule,
+    MatPaginator,
     MatTableModule,
     MatListModule,
     MatGridListModule,
