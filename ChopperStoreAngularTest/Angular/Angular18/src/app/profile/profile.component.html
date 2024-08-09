@@ -1,1 +1,61 @@
-<p>profile works!</p>
+<div style="text-align: center; margin-top: 4em;">
+  <h1 class="bold" style="font-family:Calibri;"> Perfil</h1>
+</div>
+
+<div style="margin-top: 4em;" class="flex-container">
+  <div class="flex-item-left">
+    <div style="display: flex; flex-direction:column; align-items:center; justify-content:center">
+      <img src="https://material.angular.io/assets/img/examples/shiba2.jpg" class="company shadow">
+      <button style="margin-top:2em;background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button>Cargar foto</button>
+    </div>
+  </div>
+  <div class="flex-item-right">
+    <div class="container">
+      <div style="display: flex; flex-direction:column; align-items:center;">
+        <div class="example-form">
+          <p class="semibold">Nombre</p>
+          <mat-form-field appearance="outline" class="example-full-width">
+            <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
+            <input style="color: #828282" matInput />
+          </mat-form-field>
+          <p class="semibold">Apellido</p>
+          <mat-form-field appearance="outline" class="example-full-width">
+            <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
+            <input style="color: #828282" matInput />
+          </mat-form-field>
+          <p class="semibold">Mail</p>
+          <mat-form-field appearance="outline" class="example-full-width">
+            <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
+            <input style="color: #828282" matInput />
+          </mat-form-field>
+          <p class="semibold">Telefono</p>
+          <mat-form-field appearance="outline" class="example-full-width">
+            <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
+            <input style="color: #828282" matInput />
+          </mat-form-field>
+          <div style="display:flex;justify-content:center">
+            <button style="margin-top:2em;background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button>Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h1 class="bold" style="font-family:Calibri; text-align:center; margin-top:2em"> Historial de compras</h1>
+<div style="margin-top:4em; border-radius:10px;" class="flex-container shadow">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+    @for (column of columns; track column) {
+    <ng-container [matColumnDef]="column.columnDef">
+      <th mat-header-cell *matHeaderCellDef>
+        {{column.header}}
+      </th>
+      <td mat-cell *matCellDef="let row">
+        {{column.cell(row)}}
+      </td>
+    </ng-container>
+    }
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

@@ -13,6 +13,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -41,6 +43,8 @@ import { ProfileComponent } from './profile/profile.component';
     ProfileComponent,
   ],
   imports: [
+    MatTableModule,
+    MatListModule,
     MatGridListModule,
     MatCardModule,
     ReactiveFormsModule,

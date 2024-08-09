@@ -1,0 +1,106 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.shadow {
+  box-shadow: 0 2px 15px 2px grey !important;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.semibold {
+  font-weight: 500;
+}
+
+.spacer1 {
+  flex: 0.05 1 auto;
+}
+
+.spacer2 {
+  flex: 0.05 2 auto;
+}
+
+.spacer3 {
+  flex: 0.3 1 auto
+}
+
+html {
+  font-size: 62.5%;
+}
+
+.pink {
+  background-color: #D9697D;
+}
+
+.gray {
+  color: #828282;
+}
+
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.container img {
+  width: 100%;
+}
+
+.container .btn:hover {
+  background-color: black;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 5%;
+  margin-left: 5%;
+}
+
+.flex-item-left {
+  flex: 45%;
+}
+
+.flex-item-right {
+  flex: 45%;
+}
+
+@media (max-width: 900px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
+
+.company {
+  border-radius: 50%;
+  width: 500px;
+  height: 500px;
+  padding: 5px;
+}
+
+.btn {
+  border-radius: 10px;
+  min-height: 50px;
+  min-width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.example-form {
+  margin: auto;
+  min-width: 150px;
+  max-width: 500px;
+  width: 50%;
+}
+
+.example-full-width {
+}
+
