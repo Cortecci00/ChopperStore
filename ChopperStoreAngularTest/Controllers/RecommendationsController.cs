@@ -9,24 +9,22 @@ using ChopperStoreAngularTest.Models;
 
 namespace ChopperStoreAngularTest.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoriesController : Controller
+    public class RecommendationsController : Controller
     {
         private readonly ChopperStoreContext _context;
 
-        public CategoriesController(ChopperStoreContext context)
+        public RecommendationsController(ChopperStoreContext context)
         {
             _context = context;
         }
 
-        // GET: Categories
+        // GET: Recommendations
         public async Task<IActionResult> Index()
         {
-            return View(await _context.categories.ToListAsync());
+            return View(await _context.recommendations.ToListAsync());
         }
 
-        // GET: Categories/Details/5
+        // GET: Recommendations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +32,39 @@ namespace ChopperStoreAngularTest.Controllers
                 return NotFound();
             }
 
-            var category = await _context.categories
+            var recommendation = await _context.recommendations
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (recommendation == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(recommendation);
         }
 
-        // GET: Categories/Create
+        // GET: Recommendations/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Categories/Create
+        // POST: Recommendations/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,text")] Recommendation recommendation)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                _context.Add(recommendation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(recommendation);
         }
 
-        // GET: Categories/Edit/5
+        // GET: Recommendations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +72,22 @@ namespace ChopperStoreAngularTest.Controllers
                 return NotFound();
             }
 
-            var category = await _context.categories.FindAsync(id);
-            if (category == null)
+            var recommendation = await _context.recommendations.FindAsync(id);
+            if (recommendation == null)
             {
                 return NotFound();
             }
-            return View(category);
+            return View(recommendation);
         }
 
-        // POST: Categories/Edit/5
+        // POST: Recommendations/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,text")] Recommendation recommendation)
         {
-            if (id != category.Id)
+            if (id != recommendation.Id)
             {
                 return NotFound();
             }
@@ -98,12 +96,12 @@ namespace ChopperStoreAngularTest.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(recommendation);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!RecommendationExists(recommendation.Id))
                     {
                         return NotFound();
                     }
@@ -114,10 +112,10 @@ namespace ChopperStoreAngularTest.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(recommendation);
         }
 
-        // GET: Categories/Delete/5
+        // GET: Recommendations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,34 +123,34 @@ namespace ChopperStoreAngularTest.Controllers
                 return NotFound();
             }
 
-            var category = await _context.categories
+            var recommendation = await _context.recommendations
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (recommendation == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(recommendation);
         }
 
-        // POST: Categories/Delete/5
+        // POST: Recommendations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.categories.FindAsync(id);
-            if (category != null)
+            var recommendation = await _context.recommendations.FindAsync(id);
+            if (recommendation != null)
             {
-                _context.categories.Remove(category);
+                _context.recommendations.Remove(recommendation);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool RecommendationExists(int id)
         {
-            return _context.categories.Any(e => e.Id == id);
+            return _context.recommendations.Any(e => e.Id == id);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace ChopperStoreAngularTest.Models
         public DbSet<Transaction> transactions { get; set; }
         public DbSet<Skin> skins { get; set; }
         public DbSet<User> users { get; set; }
+        public DbSet<Recommendation> recommendations { get; set; }
 
         public ChopperStoreContext(DbContextOptions options) : base(options) 
         { 
