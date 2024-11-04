@@ -6,9 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace ChopperStoreAngularTest.Controllers
 {
+
+    [Route("api/[controller]")]
+    [ApiController]
     public class UsersController : Controller
     {
         private readonly ChopperStoreContext _context;
@@ -18,139 +23,184 @@ namespace ChopperStoreAngularTest.Controllers
             _context = context;
         }
 
-        // GET: Users
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<ActionResult> GetAll()
         {
-            return View(await _context.users.ToListAsync());
-        }
-
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            var usuarios = await _context.users.ToListAsync();
+            if (usuarios.Any())
             {
-                return NotFound();
-            }
-
-            var user = await _context.users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // GET: Users/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,name,lastname,email,phone,username,password,isAdmin,isBlocked")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,name,lastname,email,phone,username,password,isAdmin,isBlocked")] User user)
-        {
-            if (id != user.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                return Ok(new Response<IEnumerable<User>>
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+                    IsSuccess = false,
+                    Result = usuarios,
+                    Message = "Listado de usuarios"
+                });
+            }
+
+            return Ok(new Response<IEnumerable<User>>
+            {
+                IsSuccess = false,
+                Message = "No hay registros para mostrar",
+                Result = []
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] CreateUpdate model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<CreateUpdate>
                 {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    IsSuccess = false,
+                    Result = model,
+                    Message = "Los campos no son correctos"
+                });
             }
-            return View(user);
-        }
-
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+            var usuarioNuevo = new User
             {
-                return NotFound();
-            }
+                name = model.name,
+                lastname = model.lastname,
+                email = model.email,
+                phone = model.phone,
+                username = model.username,
+                password = model.password,
+                isAdmin = model.isAdmin,
+                isBlocked = model.isBlocked
 
-            var user = await _context.users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var user = await _context.users.FindAsync(id);
-            if (user != null)
-            {
-                _context.users.Remove(user);
-            }
-
+            };
+            await _context.users.AddAsync(usuarioNuevo);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Ok(new Response<User>
+            {
+                IsSuccess = true,
+                Result = usuarioNuevo,
+                Message = "Usuario creado correctamente",
+            });
         }
 
-        private bool UserExists(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            return _context.users.Any(e => e.Id == id);
+            if (id <= 0)
+            {
+                return BadRequest(new Response<User>
+                {
+                    IsSuccess = false,
+                    Message = "El id es necesario",
+                    Result = null
+                });
+            }
+
+            var usuario = await GetUsers(id);
+            if (usuario != null)
+            {
+                return Ok(new Response<User>
+                {
+                    IsSuccess = true,
+                    Message = "Se encontró un usuario",
+                    Result = usuario,
+                });
+            }
+            return NotFound(new Response<User>
+            {
+                IsSuccess = false,
+                Message = "No hay coincidencias",
+                Result = null
+            });
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new Response<User>
+                {
+                    IsSuccess = false,
+                    Message = "El id no es correcto",
+                    Result = null
+                });
+            }
+            var usuario = await GetUsers(id);
+            if (usuario != null)
+            {
+                _context.users.Remove(usuario);
+                await _context.SaveChangesAsync();
+
+                return Ok(new Response<User>
+                {
+                    Result = usuario,
+                    IsSuccess = true,
+                    Message = $"Se ha eliminado el usuario {usuario.name}"
+                });
+            }
+            return NotFound(new Response<User>
+            {
+                IsSuccess = false,
+                Message = "No hay coincidencias",
+                Result = usuario
+            });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CreateUpdate model)
+        { 
+            if (id <= 0) 
+            { 
+                return BadRequest(new Response<CreateUpdate> 
+                {
+                    IsSuccess = false,
+                    Message = "El id es necesario",
+                    Result = model
+                });
+            }
+            if (ModelState.IsValid) 
+            {
+                var usuario = await GetUsers(id);
+                if (usuario == null)
+                {
+                    return NotFound(new Response<CreateUpdate>
+                    {
+                        IsSuccess = false,
+                        Message = $"No se encontró un usuario con el id {id}",
+                        Result = model
+                    });
+                }
+
+                usuario.name = model.name;
+                usuario.lastname = model.lastname;
+                usuario.email = model.email;
+                usuario.phone = model.phone;
+                usuario.username = model.username;
+                usuario.password = model.password;
+
+                _context.users.Update(usuario);
+                await _context.SaveChangesAsync();
+                
+                return Ok(new Response<CreateUpdate>
+                {
+                    IsSuccess = true,
+                    Message = "Usuario actualizado",
+                    Result= model
+                });
+            }
+            return BadRequest(new Response<CreateUpdate>
+            { 
+                IsSuccess= false,
+                Message= "No se puede actualizar",
+                Result= model
+            });
+
+        }
+
+        private async Task<User> GetUsers(int id) 
+        { 
+            var usuario = await _context.users.FirstOrDefaultAsync(x => x.Id == id);
+            return usuario;
+        }
+
+
+
     }
 }

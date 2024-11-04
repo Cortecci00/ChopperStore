@@ -77,8 +77,8 @@ namespace ChopperStoreAngularTest.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("usuarioId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("usuarioId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -95,8 +95,8 @@ namespace ChopperStoreAngularTest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("userId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -157,8 +157,8 @@ namespace ChopperStoreAngularTest.Migrations
                     b.Property<DateTime>("transactionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("userId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -171,11 +171,9 @@ namespace ChopperStoreAngularTest.Migrations
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("email")
                         .IsRequired()
