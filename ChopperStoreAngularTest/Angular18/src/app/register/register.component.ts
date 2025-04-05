@@ -37,8 +37,4 @@ export class RegisterComponent {
     }
   }
 
-  dsadsadsa() {
-
-    return;
-  }
 }
