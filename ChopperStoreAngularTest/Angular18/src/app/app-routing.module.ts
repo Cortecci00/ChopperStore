@@ -1,17 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { CartComponent } from './cart/cart.component';
-import { ContactComponent } from './contact/contact.component';
-import { ProductComponent } from './product/product.component';
-import { ProductsComponent } from './products/products.component';
-import { RecommendationComponent } from './recommendation/recommendation.component';
-import { UsComponent } from './us/us.component';
-import { ProfileComponent } from './profile/profile.component';
+import { HomeComponent } from './Pages/home/home.component';
+import { LoginComponent } from './Pages/login/login.component';
+import { RegisterComponent } from './Pages/register/register.component';
+import { CartComponent } from './Pages/cart/cart.component';
+import { ContactComponent } from './Pages/contact/contact.component';
+import { ProductComponent } from './Pages/product/product.component';
+import { ProductsComponent } from './Pages/products/products.component';
+import { RecommendationComponent } from './Pages/recommendation/recommendation.component';
+import { UsComponent } from './Pages/us/us.component';
+import { ProfileComponent } from './Pages/profile/profile.component';
 
 const routes: Routes = [
+  { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

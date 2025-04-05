@@ -21,14 +21,34 @@ namespace ChopperStoreAngularTest.Models
     {
 
         // Actualizar - Crear
-
+        [Required(ErrorMessage = "El campo {0} no es correcto")]
+        [MinLength(5, ErrorMessage = "El campo {0} debe tener al menos {1} letras")]
         public string name { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} no es correcto")]
+        [MinLength(5, ErrorMessage = "El campo {0} debe tener al menos {1} letras")]
         public string lastname { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} no es correcto")]
+        [MinLength(2, ErrorMessage = "El campo {0} debe tener al menos {1} letras")]
         public string email { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} no es correcto")]
+        [MinLength(3, ErrorMessage = "El campo {0} debe tener al menos {1} letras")]
         public string phone { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} no es correcto")]
+        [MinLength(5, ErrorMessage = "El campo {0} debe tener al menos {1} letras")]
         public string username { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} no es correcto")]
+        [MinLength(5, ErrorMessage = "El campo {0} debe tener al menos {1} letras")]
         public string password { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} no es correcto")]
+        [MinLength(2, ErrorMessage = "El campo {0} debe tener al menos {1} letras")]
         public bool isAdmin { get; set; }
+
         public bool isBlocked { get; set; }
     }
 }

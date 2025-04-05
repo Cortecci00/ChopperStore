@@ -3,6 +3,8 @@
     "@angular-devkit/build-angular": "^19.2.6"
   },
   "dependencies": {
-    "@angular/core": "^19.2.5"
+    "@angular/animations": "^19.2.5",
+    "@angular/core": "^19.2.5",
+    "ngx-toastr": "^19.0.0"
   }
 }

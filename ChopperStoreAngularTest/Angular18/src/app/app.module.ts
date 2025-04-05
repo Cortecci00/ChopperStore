@@ -15,19 +15,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule,MatPaginator } from '@angular/material/paginator'
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator'
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { ProductsComponent } from './products/products.component';
-import { ProductComponent } from './product/product.component';
-import { CartComponent } from './cart/cart.component';
-import { UsComponent } from './us/us.component';
-import { ContactComponent } from './contact/contact.component';
-import { RecommendationComponent } from './recommendation/recommendation.component';
-import { ProfileComponent } from './profile/profile.component';
+import { HomeComponent } from './Pages/home/home.component';
+import { LoginComponent } from './Pages/login/login.component';
+import { RegisterComponent } from './Pages/register/register.component';
+import { ProductsComponent } from './Pages/products/products.component';
+import { ProductComponent } from './Pages/product/product.component';
+import { CartComponent } from './Pages/cart/cart.component';
+import { UsComponent } from './Pages/us/us.component';
+import { ContactComponent } from './Pages/contact/contact.component';
+import { RecommendationComponent } from './Pages/recommendation/recommendation.component';
+import { ProfileComponent } from './Pages/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,6 @@ import { ProfileComponent } from './profile/profile.component';
   ],
   imports: [
     MatPaginatorModule,
-    MatPaginator,
     MatTableModule,
     MatListModule,
     MatGridListModule,

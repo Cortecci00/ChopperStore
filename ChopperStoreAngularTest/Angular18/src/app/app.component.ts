@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IconSetService } from '@coreui/icons-angular';
 import { cilListNumbered, cilPaperPlane, brandSet } from '@coreui/icons';
-
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import { cilListNumbered, cilPaperPlane, brandSet } from '@coreui/icons';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'Angular18';
+  title = 'ChopperStore';
   constructor(
     public iconSet: IconSetService
   ) {

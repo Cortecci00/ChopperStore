@@ -1,0 +1,70 @@
+<div style="text-align: center; margin: 4em 20em 20px 20em;">
+  <p class="semibold" style="font-family: Calibri; font-size: 36px">Registrate</p>
+</div>
+
+<div class="container" style="margin-top: 20px">
+  <div class="line"><mat-divider></mat-divider></div>
+  <div class="line"><mat-divider></mat-divider></div>
+</div>
+
+<form [formGroup]="formUser" (ngSubmit)="onSubmit()" style="margin-top: 20px; margin-bottom: 4em;" class="example-form">
+
+  <!-- Usuario -->
+  <p class="semibold">Usuario</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <mat-label>Ingresá tu usuario</mat-label>
+    <input matInput formControlName="username" />
+    <mat-error *ngIf="submitted && formUser.get('username')?.invalid">
+      El nombre de usuario es requerido (mínimo 5 caracteres).
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Email -->
+  <p class="semibold">Email</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <mat-label>Ingresá tu email</mat-label>
+    <input matInput type="email" formControlName="email" required />
+    <mat-error *ngIf="submitted && formUser.get('email')?.invalid">
+      El email es requerido y debe ser válido.
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Contraseña -->
+  <p class="semibold">Contraseña</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <mat-label>Ingresá tu contraseña</mat-label>
+    <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" />
+    <button mat-icon-button matSuffix type="button" (click)="togglePassword()">
+      <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+    <mat-error *ngIf="submitted && formUser.get('password')?.invalid">
+      La contraseña es requerida (mínimo 5 caracteres).
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Repetir contraseña -->
+  <p class="semibold">Repetir contraseña</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <mat-label>Repetí tu contraseña</mat-label>
+    <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="confirmPassword" />
+    <button mat-icon-button matSuffix type="button" (click)="togglePassword()">
+      <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <!-- Error si las contraseñas no coinciden -->
+  <mat-error *ngIf="submitted && formUser.errors?.['passwordMismatch']">
+    Las contraseñas no coinciden.
+  </mat-error>
+
+  <!-- Botón enviar -->
+  <button class="example-full-width" style="margin-top: 20px; background-color: #D9697D; color: white;" type="submit" mat-flat-button>
+    Crear cuenta
+  </button>
+
+  <!-- Link login -->
+  <div class="ltxt" style="margin-top: 10px;">
+    <a style="color: grey" routerLink="/login">¿Ya tenés una cuenta? Iniciá sesión</a>
+  </div>
+
+</form>

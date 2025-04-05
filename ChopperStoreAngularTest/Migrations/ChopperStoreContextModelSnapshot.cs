@@ -36,7 +36,7 @@ namespace ChopperStoreAngularTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("categories");
+                    b.ToTable("categories", (string)null);
                 });
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.Item", b =>
@@ -62,7 +62,7 @@ namespace ChopperStoreAngularTest.Migrations
 
                     b.HasIndex("skinId");
 
-                    b.ToTable("items");
+                    b.ToTable("items", (string)null);
                 });
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.Recommendation", b =>
@@ -77,14 +77,14 @@ namespace ChopperStoreAngularTest.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("usuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("usuarioId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("usuarioId");
 
-                    b.ToTable("recommendations");
+                    b.ToTable("recommendations", (string)null);
                 });
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.ShoppingCart", b =>
@@ -95,14 +95,14 @@ namespace ChopperStoreAngularTest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("userId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("userId");
 
-                    b.ToTable("shoppingcarts");
+                    b.ToTable("shoppingcarts", (string)null);
                 });
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.Skin", b =>
@@ -137,7 +137,7 @@ namespace ChopperStoreAngularTest.Migrations
 
                     b.HasIndex("categoryId");
 
-                    b.ToTable("skins");
+                    b.ToTable("skins", (string)null);
                 });
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.Transaction", b =>
@@ -157,8 +157,8 @@ namespace ChopperStoreAngularTest.Migrations
                     b.Property<DateTime>("transactionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("userId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -166,14 +166,16 @@ namespace ChopperStoreAngularTest.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("transactions");
+                    b.ToTable("transactions", (string)null);
                 });
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("email")
                         .IsRequired()
@@ -207,7 +209,7 @@ namespace ChopperStoreAngularTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.Item", b =>
