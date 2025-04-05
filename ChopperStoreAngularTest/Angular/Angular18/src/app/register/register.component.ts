@@ -36,4 +36,9 @@ export class RegisterComponent {
       this.errorMessage.set('');
     }
   }
+
+  dsadsadsa() {
+
+    return;
+  }
 }
