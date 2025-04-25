@@ -15,8 +15,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UsersService {
   // private _baseUrl = 'https://localhost:7019/';
-  // private _baseUrl = 'https://localhost:5036/';
-  private _baseUrl = 'http://localhost:5000/';
+  private _baseUrl = 'http://localhost:5036/';
 
   private http = inject(HttpClient);
   constructor() {}
@@ -49,6 +48,19 @@ export class UsersService {
   deleteUser(id: string): Observable<EliminarResponse> {
     return this.http.delete<EliminarResponse>(
       `${this._baseUrl}api/Users/${id}`
+    );
+  }
+  loginUser(data: { email: string; password: string }) {
+    return this.http.post<{ isSuccess: boolean; result: any }>(
+      `${this._baseUrl}api/Users/login`,
+      data
+    );
+  }
+
+  loginWithGoogle(googleToken: string) {
+    return this.http.post<{ isSuccess: boolean; result: any }>(
+      `${this._baseUrl}api/Users/google-login`,
+      { token: googleToken }
     );
   }
 }

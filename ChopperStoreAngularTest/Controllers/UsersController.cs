@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Google.Apis.Auth;
+using ChopperStoreAngularTest.Services;
 
 namespace ChopperStoreAngularTest.Controllers
 {
@@ -17,10 +19,58 @@ namespace ChopperStoreAngularTest.Controllers
     public class UsersController : Controller
     {
         private readonly ChopperStoreContext _context;
+        private readonly IGoogleAuthService _googleAuthService;
+        private readonly IUserService _userService;
 
-        public UsersController(ChopperStoreContext context)
+        public UsersController(ChopperStoreContext context, IUserService userService, IGoogleAuthService googleAuthService)
         {
             _context = context;
+            _userService = userService;
+            _googleAuthService = googleAuthService;
+        }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto request)
+        {
+            if (string.IsNullOrEmpty(request?.Token))
+            {
+                return BadRequest("Token de Google no recibido");
+            }
+
+            var googleUser = await _googleAuthService.VerifyGoogleTokenAsync(request.Token);
+            if (googleUser == null)
+            {
+                return BadRequest("Token de Google inválido");
+            }
+
+            var user = await _userService.GetUserByGoogleIdAsync(googleUser.Subject);
+
+            if (user == null)
+            {
+                // Si el usuario no existe, lo creamos
+                user = new User
+                {
+                    GoogleId = googleUser.Subject,
+                    email = googleUser.Email,
+                    name = googleUser.Name,
+                    password = Guid.NewGuid().ToString() // Generar una contraseña de forma automática
+                };
+
+                user = await _userService.CreateUserAsync(user);
+            }
+
+            return Ok(user);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto request)
+        {
+            var user = await _userService.GetUserByEmailAsync(request.email);
+            if (user == null || user.password != request.password)
+            {
+                return Unauthorized("Email o contraseña incorrectos");
+            }
+            return Ok(user);
         }
 
         [HttpGet]
@@ -56,18 +106,14 @@ namespace ChopperStoreAngularTest.Controllers
                     Message = "Los campos no son correctos"
                 });
             }
+
             var usuarioNuevo = new User
             {
-                name = model.name,
-                lastname = model.lastname,
                 email = model.email,
-                phone = model.phone,
                 username = model.username,
-                password = model.password,
-                isAdmin = model.isAdmin,
-                isBlocked = model.isBlocked
-
+                password = model.password
             };
+
             await _context.users.AddAsync(usuarioNuevo);
             await _context.SaveChangesAsync();
 
@@ -75,7 +121,7 @@ namespace ChopperStoreAngularTest.Controllers
             {
                 IsSuccess = true,
                 Result = usuarioNuevo,
-                Message = "Usuario creado correctamente",
+                Message = "Usuario creado correctamente"
             });
         }
 
@@ -168,10 +214,7 @@ namespace ChopperStoreAngularTest.Controllers
                     });
                 }
 
-                usuario.name = model.name;
-                usuario.lastname = model.lastname;
                 usuario.email = model.email;
-                usuario.phone = model.phone;
                 usuario.username = model.username;
                 usuario.password = model.password;
 

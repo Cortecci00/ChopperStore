@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ViewEncapsulation} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
 import { UsersService } from '../../Services/users.service';
 import { CrearActualizar, User } from '../../Interfaces';
 
@@ -12,13 +11,10 @@ import { CrearActualizar, User } from '../../Interfaces';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class RegisterComponent {
   private _activeRoute = inject(ActivatedRoute);
-  private _route = inject(Router);
-  private _usersService = inject(UsersService);
-  private _fb = inject(FormBuilder);
-  private _snackBar = inject(MatSnackBar);
 
   titulo = 'Crear nuevo usuario';
   isLoading = false;
@@ -30,13 +26,13 @@ export class RegisterComponent {
   private crearUser?: CrearActualizar;
   private user?: User;
 
-  constructor() {
+  constructor(private _fb: FormBuilder, private _usersService: UsersService, private _route: Router, private _snackBar: MatSnackBar) {
     this.formUser = this._fb.group(
       {
-        email: ['', [Validators.required, Validators.minLength(2)]],
-        username: ['', [Validators.required, Validators.minLength(5)]],
-        password: ['', [Validators.required, Validators.minLength(5)]],
-        confirmPassword: ['', [Validators.required]],
+        email: ['', [Validators.required, Validators.email]], // Solo validación de email
+        username: ['', [Validators.required, Validators.minLength(5)]], // Validación del usuario
+        password: ['', [Validators.required, Validators.minLength(5)]], // Contraseña
+        confirmPassword: ['', [Validators.required]] // Confirmación de contraseña
       },
       { validators: this.passwordMatchValidator }
     );
@@ -86,13 +82,13 @@ export class RegisterComponent {
       return;
     }
 
-    this.user?.id ? this.editarUser() : this.nuevoUser();
+    this.nuevoUser();
   }
 
   private nuevoUser() {
-    this.crearUser = this.formUser.value;
-    if (this.crearUser) {
-      this._usersService.postUser(this.crearUser).subscribe(
+    const crearUser = this.formUser.value;
+    if (crearUser) {
+      this._usersService.postUser(crearUser).subscribe(
         (resp) => {
           if (resp.isSuccess) {
             this._showSuccess(resp.message);
@@ -129,7 +125,6 @@ export class RegisterComponent {
     }
   }
 
-  // ✅ Métodos Snackbar
   private _showSuccess(message: string) {
     this._snackBar.open(message, 'Cerrar', {
       duration: 3000,

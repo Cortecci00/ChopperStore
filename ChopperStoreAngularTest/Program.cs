@@ -1,5 +1,8 @@
 using ChopperStoreAngularTest.Models;
+using Google.Apis.Auth;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using ChopperStoreAngularTest.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,8 @@ builder.Services.AddDbContext<ChopperStoreContext>(options =>
     options.UseSqlServer("Data Source=LEITOPC;Initial Catalog=ChopperStore;Integrated Security=True;Trust Server Certificate=True");
 
 });
+// Agregar el servicio para verificar el token de Google
+builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -19,9 +24,9 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy(name: "AllowAll", builder =>
     {
-        builder.WithOrigins("http://localhost:4200")
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
     });
 
 });

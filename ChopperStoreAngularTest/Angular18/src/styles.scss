@@ -14,6 +14,10 @@ app-root {
 }
 // Manipulate initial background color
 
+a {
+  text-decoration: none;
+}
+
 .mdc-text-field--outlined {
   --mdc-outlined-text-field-container-shape: 10px;
 }

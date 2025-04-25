@@ -13,7 +13,7 @@
   <p class="semibold">Usuario</p>
   <mat-form-field appearance="outline" class="example-full-width">
     <mat-label>Ingresá tu usuario</mat-label>
-    <input matInput formControlName="username" />
+    <input matInput class="custom-input" formControlName="username" />
     <mat-error *ngIf="submitted && formUser.get('username')?.invalid">
       El nombre de usuario es requerido (mínimo 5 caracteres).
     </mat-error>
@@ -64,7 +64,7 @@
 
   <!-- Link login -->
   <div class="ltxt" style="margin-top: 10px;">
-    <a style="color: grey" routerLink="/login">¿Ya tenés una cuenta? Iniciá sesión</a>
+    <a style="color: #828282" routerLink="/login">¿Ya tenés una cuenta? Iniciá sesión</a>
   </div>
 
 </form>

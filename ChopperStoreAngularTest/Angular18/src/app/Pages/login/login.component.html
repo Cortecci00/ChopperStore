@@ -10,7 +10,7 @@
   <div class="line"><mat-divider></mat-divider></div>
 </div>
 
-<form style="margin-top:20px; margin-bottom:4em;" class="example-form">
+<form [formGroup]="formLogin" (ngSubmit)="login()" style="margin-top:20px; margin-bottom:4em;" class="example-form">
   <p class="semibold">Email</p>
   <mat-form-field appearance="outline" class="example-full-width">
     <mat-label style="color: #828282">Ingresá tu email</mat-label>
@@ -35,12 +35,13 @@
       <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
     </button>
   </mat-form-field>
-  <button style="margin-top:20px; background-color: #D9697D; color: white; " class="btn" mat-flat-button>Iniciá sesión</button>
+  <button style="margin-top:20px; background-color: #D9697D; color: white; " class="btn" type="submit" mat-flat-button>Iniciá sesión</button>
+
   <div class="ltxt">
-    <a style="margin-top: 10px">¿Olvidaste tu contraseña?</a>
+    <a routerLink="" style="margin-top: 10px; color:#828282 ">¿Olvidaste tu contraseña?</a>
   </div>
   <div class="ltxt">
-    <a style="margin-top: 10px">¿No tenés una cuenta? Registrate</a>
+    <a routerLink="/register" style="margin-top: 10px; color:#828282 ">¿No tenés una cuenta? Registrate</a>
   </div>
 </form>
 
