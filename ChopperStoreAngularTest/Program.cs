@@ -13,6 +13,8 @@ builder.Services.AddDbContext<ChopperStoreContext>(options =>
     options.UseSqlServer("Data Source=LEITOPC;Initial Catalog=ChopperStore;Integrated Security=True;Trust Server Certificate=True");
 
 });
+
+builder.Services.AddScoped<IUserService, UserService>();
 // Agregar el servicio para verificar el token de Google
 builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 builder.Services.AddControllers();
@@ -38,6 +40,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();

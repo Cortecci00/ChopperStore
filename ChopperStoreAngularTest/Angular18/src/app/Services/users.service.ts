@@ -57,6 +57,13 @@ export class UsersService {
     );
   }
 
+  register(data: { email: string; username: string; password: string }) {
+    return this.http.post<{ isSuccess: boolean; result: any }>(
+      `${this._baseUrl}api/Users/register`,
+      data
+    );
+  }
+
   loginWithGoogle(googleToken: string) {
     return this.http.post<{ isSuccess: boolean; result: any }>(
       `${this._baseUrl}api/Users/google-login`,

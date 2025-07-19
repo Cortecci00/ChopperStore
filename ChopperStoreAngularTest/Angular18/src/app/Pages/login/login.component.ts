@@ -96,31 +96,11 @@ export class LoginComponent {
     }
   }
 
-  ngOnInit() {
-    // Inicializar el botón de Google
-    google.accounts.id.initialize({
-      client_id: "864300664450-helt864neq6oqb3hcs8b6iso32rcm2fg.apps.googleusercontent.com",
-      callback: this.handleCredentialResponse.bind(this), // Callback al hacer login con Google
-      auto_select: false,
-      cancel_on_tap_outside: true,
-      scope: "profile email",
-    });
-
-    // Renderizar el botón de login con Google
-    google.accounts.id.renderButton(
-      document.getElementById("google-button"),
-      { theme: "outline", size: "large", width: 350 }
-    );
-
-    // Opcional: prompt para login si la sesión ya está activa
-    google.accounts.id.prompt(); // Puede ser útil para mostrar el login de Google si ya hay una sesión activa
-  }
-
   ngOnInit(): void {
     // Esperar que el DOM esté listo
     setTimeout(() => {
       google.accounts.id.initialize({
-        client_id: "TU_CLIENT_ID",
+        client_id: "864300664450-helt864neq6oqb3hcs8b6iso32rcm2fg.apps.googleusercontent.com",
         callback: this.handleCredentialResponse.bind(this),
         auto_select: false,
         cancel_on_tap_outside: true,
@@ -132,4 +112,5 @@ export class LoginComponent {
       );
     }, 0);
   }
+
 }

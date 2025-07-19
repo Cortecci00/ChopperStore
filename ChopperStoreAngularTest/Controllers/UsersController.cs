@@ -32,34 +32,56 @@ namespace ChopperStoreAngularTest.Controllers
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto request)
         {
-            if (string.IsNullOrEmpty(request?.Token))
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
             {
-                return BadRequest("Token de Google no recibido");
-            }
+                Audience = new List<string>() { "864300664450-helt864neq6oqb3hcs8b6iso32rcm2fg.apps.googleusercontent.com" }
+            };
 
-            var googleUser = await _googleAuthService.VerifyGoogleTokenAsync(request.Token);
-            if (googleUser == null)
+            // Validamos el token
+            var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token, settings);
+
+            Console.WriteLine("VALOR:" + payload);
+
+            // Verificamos si ya existe el usuario
+            var existingUser = await _userService.GetUserByEmailAsync(payload.Email);
+
+            Console.WriteLine("VALOR:" + existingUser);
+
+            if (existingUser == null)
             {
-                return BadRequest("Token de Google inválido");
-            }
-
-            var user = await _userService.GetUserByGoogleIdAsync(googleUser.Subject);
-
-            if (user == null)
-            {
-                // Si el usuario no existe, lo creamos
-                user = new User
+                // Construimos el nuevo usuario con los datos mínimos requeridos
+                var newUser = new User
                 {
-                    GoogleId = googleUser.Subject,
-                    email = googleUser.Email,
-                    name = googleUser.Name,
-                    password = Guid.NewGuid().ToString() // Generar una contraseña de forma automática
+                    GoogleId = payload.Subject,
+                    email = payload.Email,
+                    username = payload.Email, // Podés usar el email como username inicial
+                    name = payload.GivenName,
+                    lastname = payload.FamilyName,
+                    isAdmin = false,
+                    isBlocked = false,
+                    password = null // Opcional: si tu modelo lo permite
                 };
 
-                user = await _userService.CreateUserAsync(user);
+                // Lo guardamos
+                var createdUser = await _userService.CreateUserAsync(newUser);
+
+                if (string.IsNullOrEmpty(request?.Token))
+                {
+                    Console.WriteLine("TOKEN NULO O VACÍO");
+                    return BadRequest("No se recibió token");
+                }
+
+                return Ok(createdUser);
             }
 
-            return Ok(user);
+            if (string.IsNullOrEmpty(request?.Token))
+            {
+                Console.WriteLine("TOKEN NULO O VACÍO");
+                return BadRequest("No se recibió token");
+            }
+
+            // Si ya existe, devolvemos el usuario existente
+            return Ok(existingUser);
         }
 
         [HttpPost("login")]
@@ -71,6 +93,51 @@ namespace ChopperStoreAngularTest.Controllers
                 return Unauthorized("Email o contraseña incorrectos");
             }
             return Ok(user);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] CreateUpdate model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<CreateUpdate>
+                {
+                    IsSuccess = false,
+                    Message = "Datos inválidos",
+                    Result = model
+                });
+            }
+
+            // Verificar si ya existe usuario
+            var existeUsuario = await _context.users.AnyAsync(u => u.email == model.email);
+            if (existeUsuario)
+            {
+                return BadRequest(new Response<CreateUpdate>
+                {
+                    IsSuccess = false,
+                    Message = "El email ya está registrado",
+                    Result = model
+                });
+            }
+
+            var nuevoUsuario = new User
+            {
+                email = model.email,
+                username = model.username,
+                password = model.password, 
+                isAdmin = false,
+                isBlocked = false
+            };
+
+            await _context.users.AddAsync(nuevoUsuario);
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<User>
+            {
+                IsSuccess = true,
+                Message = "Usuario registrado correctamente",
+                Result = nuevoUsuario
+            });
         }
 
         [HttpGet]

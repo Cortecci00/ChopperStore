@@ -3,7 +3,20 @@
     <span class="spacer1"></span>
     <img width="120" height="120" src="/chopper-logotransparente.png" />
     <span class="example-spacer"></span>
-    <a class="html" routerLink="/login" style="font-family:Calibri; color: white">Login / Register</a>
+
+    <a *ngIf="!usuarioLogueado; else perfil"
+       class="html" routerLink="/login"
+       style="font-family: Calibri; color: white;">
+      Login / Register
+    </a>
+
+    <ng-template #perfil>
+      <a class="html" routerLink="/profile"
+         style="font-family: Calibri; color: white;">
+        Mi Perfil
+      </a>
+
+    </ng-template>
     <span class="spacer1"></span>
   </mat-toolbar>
 </header>
