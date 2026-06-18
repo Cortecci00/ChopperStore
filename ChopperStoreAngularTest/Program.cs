@@ -59,7 +59,10 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy(name: "AllowAngular", policy =>
     {
-        policy.WithOrigins(builder.Configuration["Cors:AllowedOrigin"]!)
+        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+            ?? new[] { builder.Configuration["Cors:AllowedOrigin"]! };
+
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
