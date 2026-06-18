@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ChopperStoreContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres"));
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
