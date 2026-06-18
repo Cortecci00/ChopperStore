@@ -3,8 +3,9 @@
 </div>
 
 <div style="margin-left:5%; margin-right:5%; margin-top:2em; margin-bottom:4em">
-  <mat-tab-group>
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Categorías">
+      <div class="tab-content">
       <div style="margin-top:2em; display:flex; flex-wrap:wrap; gap:2em">
         <form [formGroup]="formCategory" (ngSubmit)="submitCategory()" style="min-width:250px">
           <mat-form-field appearance="outline" class="example-full-width">
@@ -37,9 +38,11 @@
           <tr mat-row *matRowDef="let row; columns: ['name', 'actions'];"></tr>
         </table>
       </div>
+      </div>
     </mat-tab>
 
     <mat-tab label="Skins">
+      <div class="tab-content">
       <div style="margin-top:2em; display:flex; flex-wrap:wrap; gap:1em; align-items:flex-start">
         <form [formGroup]="formSkin" (ngSubmit)="submitSkin()" style="display:flex; flex-wrap:wrap; gap:1em; align-items:flex-start">
           <mat-form-field appearance="outline">
@@ -116,6 +119,44 @@
           <tr mat-header-row *matHeaderRowDef="['photo', 'name', 'rarity', 'price', 'category', 'actions']"></tr>
           <tr mat-row *matRowDef="let row; columns: ['photo', 'name', 'rarity', 'price', 'category', 'actions'];"></tr>
         </table>
+      </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Agregar desde Steam">
+      <div class="tab-content">
+      <div style="margin-top:2em; display:flex; flex-direction:column; align-items:flex-start; gap:1em">
+        <p style="color:#828282">
+          Trae los items de tu inventario de Steam (configurá tu Trade URL en
+          <a routerLink="/profile">tu perfil</a> primero) y precargá nombre, foto, rareza, float y pattern en el formulario de Skins.
+        </p>
+        <button type="button" style="background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button [disabled]="loadingSteamInventory" (click)="loadSteamInventory()">
+          {{loadingSteamInventory ? 'Cargando...' : 'Cargar inventario de Steam'}}
+        </button>
+      </div>
+
+      <div *ngIf="!loadingSteamInventory && steamItems.length === 0" style="margin-top:2em; color:#828282">
+        No hay items cargados todavía.
+      </div>
+
+      <div style="margin-top:2em" class="rgrid">
+        <mat-card *ngFor="let item of steamItems" style="padding:10px" class="example-card mat-card-color shadow">
+          <img mat-card-image [src]="item.photoUrl ?? 'https://material.angular.io/assets/img/examples/shiba1.jpg'" style="height:160px; object-fit:cover; border-radius:6px" />
+          <mat-card-header class="mat-card-header">
+            <mat-card-title class="steam-card-title" style="font-size:16px">{{item.name}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="mat-card-color">
+            <p class="steam-detail-line" [style.color]="item.rarity ? ('#' + item.rarityColor) : null" style="font-weight:600">{{item.rarity}}</p>
+            <p class="steam-detail-line" style="color:#000000">{{item.exterior}}</p>
+            <p class="steam-detail-line" style="color:#828282">{{item.floatDisponible ? ('Float: ' + item.skinFloat) : ''}}</p>
+            <p class="steam-detail-line" style="color:#828282">{{item.floatDisponible ? ('Pattern: ' + item.pattern) : ''}}</p>
+            <p class="steam-detail-line" [style.color]="item.tradable ? '#2e7d32' : '#c62828'" style="font-weight:600">{{item.tradable ? 'Tradeable' : 'No tradeable (bloqueado)'}}</p>
+          </mat-card-content>
+          <div class="steam-action">
+            <button *ngIf="item.tradable" style="background-color: #D9697D; color: white;" class="btn" mat-flat-button (click)="useSteamItem(item)">Usar este item</button>
+          </div>
+        </mat-card>
+      </div>
       </div>
     </mat-tab>
   </mat-tab-group>

@@ -2,9 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Category, Skin } from '../../Interfaces';
+import { Category, Skin, SteamInventoryItem } from '../../Interfaces';
 import { CategoryService } from '../../Services/category.service';
 import { SkinService } from '../../Services/skin.service';
+import { SteamService } from '../../Services/steam.service';
 
 const MAX_PHOTO_SIZE_BYTES = 2 * 1024 * 1024;
 
@@ -23,12 +24,17 @@ export class AdminComponent implements OnInit {
   editingSkinId: number | null = null;
   skinPhotoPreview: string | null = null;
 
+  selectedTabIndex = 0;
+  steamItems: SteamInventoryItem[] = [];
+  loadingSteamInventory = false;
+
   @ViewChild('skinPhotoInput') skinPhotoInput!: ElementRef<HTMLInputElement>;
 
   constructor(
     private _fb: FormBuilder,
     private _categoryService: CategoryService,
     private _skinService: SkinService,
+    private _steamService: SteamService,
     private _snackBar: MatSnackBar
   ) {
     this.formCategory = this._fb.group({
@@ -141,6 +147,35 @@ export class AdminComponent implements OnInit {
       this.formSkin.patchValue({ photoUrl: base64 });
     };
     reader.readAsDataURL(file);
+  }
+
+  loadSteamInventory() {
+    this.loadingSteamInventory = true;
+    this._steamService.getInventory().subscribe({
+      next: (r) => {
+        this.steamItems = [...r.result].sort((a, b) => (b.tradable ? 1 : 0) - (a.tradable ? 1 : 0));
+        this.loadingSteamInventory = false;
+      },
+      error: (err) => {
+        this.loadingSteamInventory = false;
+        this.onError(err);
+      },
+    });
+  }
+
+  useSteamItem(item: SteamInventoryItem) {
+    if (!item.tradable) return;
+
+    this.editingSkinId = null;
+    this.formSkin.patchValue({
+      name: item.name,
+      rarity: item.rarity ?? '',
+      skinFloat: item.skinFloat ?? 0,
+      pattern: item.pattern ?? 0,
+      photoUrl: item.photoUrl ?? null,
+    });
+    this.skinPhotoPreview = item.photoUrl ?? null;
+    this.selectedTabIndex = 1;
   }
 
   deleteSkin(id: number) {

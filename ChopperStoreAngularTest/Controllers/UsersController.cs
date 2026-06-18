@@ -388,6 +388,57 @@ namespace ChopperStoreAngularTest.Controllers
             });
         }
 
+        [Authorize(Policy = "AdminOnly")]
+        [HttpPut("{id}/steam-trade-url")]
+        public async Task<IActionResult> PutSteamTradeUrl(int id, [FromBody] UpdateSteamTradeUrlDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<User>
+                {
+                    IsSuccess = false,
+                    Message = "La Trade URL es obligatoria",
+                    Result = null
+                });
+            }
+
+            if (!EsPropietarioOAdmin(id))
+            {
+                return Forbid();
+            }
+
+            var usuario = await GetUsers(id);
+            if (usuario == null)
+            {
+                return NotFound(new Response<User>
+                {
+                    IsSuccess = false,
+                    Message = $"No se encontró un usuario con el id {id}",
+                    Result = null
+                });
+            }
+
+            if (SteamInventoryService.ParseTradeUrlToSteamId64(model.SteamTradeUrl) == null)
+            {
+                return BadRequest(new Response<User>
+                {
+                    IsSuccess = false,
+                    Message = "La Trade URL no es válida",
+                    Result = null
+                });
+            }
+
+            usuario.SteamTradeUrl = model.SteamTradeUrl;
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<User>
+            {
+                IsSuccess = true,
+                Message = "Trade URL actualizada",
+                Result = usuario
+            });
+        }
+
         private bool EsPropietarioOAdmin(int id)
         {
             var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);

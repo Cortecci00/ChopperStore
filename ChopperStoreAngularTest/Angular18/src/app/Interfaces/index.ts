@@ -14,3 +14,4 @@ export { ShoppingCart } from './shopping-cart.interface';
 export { Transaction, TransactionItem } from './transaction.interface';
 export { Recommendation } from './recommendation.interface';
 export { ContactMessage, ContactMessageCreate } from './contact-message.interface';
+export { SteamInventoryItem } from './steam-inventory-item.interface';

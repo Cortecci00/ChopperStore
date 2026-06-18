@@ -9,4 +9,5 @@ export interface User {
   isAdmin: boolean;
   isBlocked: boolean;
   photoUrl?: string | null;
+  steamTradeUrl?: string | null;
 }

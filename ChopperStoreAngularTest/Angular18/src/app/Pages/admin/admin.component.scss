@@ -22,3 +22,48 @@
 table {
   width: 100%;
 }
+
+.example-card {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.steam-detail-line {
+  height: 24px;
+  line-height: 24px;
+  margin: 0;
+}
+
+.steam-card-title {
+  min-height: 2.4em;
+  line-height: 1.2em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.steam-action {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.mat-card-color {
+  background-color: white;
+}
+
+.rgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.tab-content {
+  padding: 6px 20px 28px;
+  box-sizing: border-box;
+}

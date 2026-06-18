@@ -17,8 +17,10 @@ const MAX_PHOTO_SIZE_BYTES = 2 * 1024 * 1024;
 })
 export class ProfileComponent implements OnInit, AfterViewInit {
   formProfile: FormGroup;
+  formSteam: FormGroup;
   currentUser: User | null = null;
   photoPreview: string | null = null;
+  isAdmin = false;
 
   displayedColumns: string[] = ['date', 'itemCount', 'total'];
   dataSource = new MatTableDataSource<Transaction>([]);
@@ -39,19 +41,47 @@ export class ProfileComponent implements OnInit, AfterViewInit {
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
     });
+
+    this.formSteam = this._fb.group({
+      steamTradeUrl: ['', Validators.required],
+    });
   }
 
   ngOnInit() {
+    this.isAdmin = this._authService.getIsAdmin();
+
     const id = this._authService.getCurrentUserId();
     if (!id) return;
 
     this._usersService.getUser(id).subscribe((r) => {
       this.currentUser = r.result;
       this.formProfile.patchValue(r.result);
+      this.formSteam.patchValue({ steamTradeUrl: r.result.steamTradeUrl ?? '' });
       this.photoPreview = r.result.photoUrl ?? null;
     });
 
     this._transactionService.getMine().subscribe((r) => (this.dataSource.data = r.result));
+  }
+
+  saveSteamTradeUrl() {
+    if (this.formSteam.invalid || !this.currentUser) return;
+
+    this._usersService
+      .updateSteamTradeUrl(this.currentUser.id, this.formSteam.value.steamTradeUrl)
+      .subscribe({
+        next: (r) => {
+          this.currentUser = r.result;
+          this._snackBar.open('Trade URL actualizada', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snackbar-success'],
+          });
+        },
+        error: (err) =>
+          this._snackBar.open(err.error?.message ?? 'No se pudo actualizar la Trade URL', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snackbar-error'],
+          }),
+      });
   }
 
   ngAfterViewInit() {

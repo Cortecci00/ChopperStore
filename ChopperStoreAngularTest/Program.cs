@@ -19,6 +19,11 @@ builder.Services.AddDbContext<ChopperStoreContext>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISteamInventoryService, SteamInventoryService>();
+builder.Services.AddHttpClient("Steam", client =>
+{
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (ChopperStore)");
+});
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

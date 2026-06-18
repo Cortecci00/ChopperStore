@@ -67,6 +67,12 @@ export class UsersService {
       { photoUrl }
     );
   }
+  updateSteamTradeUrl(id: string | number, steamTradeUrl: string): Observable<Response<User>> {
+    return this.http.put<Response<User>>(
+      `${this._baseUrl}api/Users/${id}/steam-trade-url`,
+      { steamTradeUrl }
+    );
+  }
   deleteUser(id: string | number): Observable<EliminarResponse> {
     return this.http.delete<EliminarResponse>(
       `${this._baseUrl}api/Users/${id}`
