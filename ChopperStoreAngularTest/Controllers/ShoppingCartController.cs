@@ -69,7 +69,19 @@ namespace ChopperStoreAngularTest.Controllers
                 return BadRequest(new Response<AddCartItemDto>
                 {
                     IsSuccess = false,
-                    Message = $"No existe una skin con el id {model.SkinId}",
+                    Message = "Esta skin ya no está disponible",
+                    Result = model
+                });
+            }
+
+            var yaReservada = await _context.transactionItems.AnyAsync(ti =>
+                ti.SkinId == model.SkinId && ti.transaction.PaymentStatus == "pending");
+            if (yaReservada)
+            {
+                return BadRequest(new Response<AddCartItemDto>
+                {
+                    IsSuccess = false,
+                    Message = "Esta skin ya no está disponible",
                     Result = model
                 });
             }
@@ -77,17 +89,12 @@ namespace ChopperStoreAngularTest.Controllers
             var cart = await GetOrCreateCartAsync();
             var item = cart.items.FirstOrDefault(i => i.SkinId == model.SkinId);
 
-            if (item != null)
+            if (item == null)
             {
-                item.quantity += model.Quantity;
-            }
-            else
-            {
-                item = new Item { SkinId = model.SkinId, quantity = model.Quantity, ShoppingCartId = cart.Id };
+                item = new Item { SkinId = model.SkinId, quantity = 1, ShoppingCartId = cart.Id };
                 await _context.items.AddAsync(item);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
 
             return Ok(new Response<ShoppingCart>
             {
@@ -100,12 +107,12 @@ namespace ChopperStoreAngularTest.Controllers
         [HttpPut("items/{itemId}")]
         public async Task<IActionResult> UpdateItem(int itemId, [FromBody] UpdateCartItemDto model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || model.Quantity != 1)
             {
                 return BadRequest(new Response<UpdateCartItemDto>
                 {
                     IsSuccess = false,
-                    Message = "La cantidad no es válida",
+                    Message = "Cada skin es única, no se puede cambiar la cantidad",
                     Result = model
                 });
             }
@@ -121,9 +128,6 @@ namespace ChopperStoreAngularTest.Controllers
                     Result = model
                 });
             }
-
-            item.quantity = model.Quantity;
-            await _context.SaveChangesAsync();
 
             return Ok(new Response<ShoppingCart>
             {

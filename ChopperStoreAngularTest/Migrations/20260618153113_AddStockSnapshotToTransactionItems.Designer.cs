@@ -4,6 +4,7 @@ using ChopperStoreAngularTest.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChopperStoreAngularTest.Migrations
 {
     [DbContext(typeof(ChopperStoreContext))]
-    partial class ChopperStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20260618153113_AddStockSnapshotToTransactionItems")]
+    partial class AddStockSnapshotToTransactionItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

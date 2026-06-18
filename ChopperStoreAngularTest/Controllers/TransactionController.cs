@@ -15,11 +15,13 @@ namespace ChopperStoreAngularTest.Controllers
     {
         private readonly ChopperStoreContext _context;
         private readonly IMercadoPagoService _mercadoPagoService;
+        private readonly ISkinStockService _skinStockService;
 
-        public TransactionController(ChopperStoreContext context, IMercadoPagoService mercadoPagoService)
+        public TransactionController(ChopperStoreContext context, IMercadoPagoService mercadoPagoService, ISkinStockService skinStockService)
         {
             _context = context;
             _mercadoPagoService = mercadoPagoService;
+            _skinStockService = skinStockService;
         }
 
         private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -42,11 +44,26 @@ namespace ChopperStoreAngularTest.Controllers
                 });
             }
 
+            var skinIds = cart.items.Select(i => i.SkinId).ToList();
+            var algunaNoDisponible = await _context.transactionItems.AnyAsync(ti =>
+                ti.SkinId != null && skinIds.Contains(ti.SkinId.Value) && ti.transaction.PaymentStatus == "pending");
+            if (algunaNoDisponible)
+            {
+                return BadRequest(new Response<string>
+                {
+                    IsSuccess = false,
+                    Message = "Una o más skins de tu carrito ya no están disponibles. Quitalas del carrito e intentá de nuevo.",
+                    Result = null
+                });
+            }
+
             var transactionItems = cart.items.Select(i => new TransactionItem
             {
                 SkinId = i.SkinId,
                 quantity = i.quantity,
-                unitPriceAtPurchase = i.skin.price
+                unitPriceAtPurchase = i.skin.price,
+                SkinName = i.skin.name,
+                SkinPhotoUrl = i.skin.PhotoUrl
             }).ToList();
 
             var transaction = new Transaction
@@ -122,7 +139,9 @@ namespace ChopperStoreAngularTest.Controllers
                 return Ok();
             }
 
-            var transaction = await _context.transactions.FirstOrDefaultAsync(t => t.Id == transactionId);
+            var transaction = await _context.transactions
+                .Include(t => t.items)
+                .FirstOrDefaultAsync(t => t.Id == transactionId);
             if (transaction == null)
             {
                 return Ok();
@@ -137,6 +156,17 @@ namespace ChopperStoreAngularTest.Controllers
             };
 
             await _context.SaveChangesAsync();
+
+            if (transaction.PaymentStatus == "approved")
+            {
+                foreach (var item in transaction.items)
+                {
+                    if (item.SkinId.HasValue)
+                    {
+                        await _skinStockService.RemoveSkinAsync(item.SkinId.Value);
+                    }
+                }
+            }
 
             return Ok();
         }

@@ -13,12 +13,7 @@
       <p style="color:#828282">Float: {{skin.skinFloat}} · Patrón: {{skin.pattern}}</p>
       <p class="semibold" style="font-size:28px; color:#D9697D; margin-top:1em">${{skin.price}}</p>
 
-      <mat-form-field appearance="outline" style="max-width:150px; margin-top:1em">
-        <mat-label style="color: #828282">Cantidad</mat-label>
-        <input matInput type="number" min="1" [formControl]="quantity" style="color:#828282" />
-      </mat-form-field>
-
-      <div>
+      <div style="margin-top:1em">
         <button style="background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button (click)="addToCart()">Agregar al carrito</button>
       </div>
     </div>

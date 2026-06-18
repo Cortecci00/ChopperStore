@@ -3,8 +3,10 @@ import { Skin } from './skin.interface';
 export interface TransactionItem {
   id: number;
   transactionId: number;
-  skinId: number;
-  skin: Skin;
+  skinId: number | null;
+  skin: Skin | null;
+  skinName: string;
+  skinPhotoUrl: string | null;
   quantity: number;
   unitPriceAtPurchase: number;
 }

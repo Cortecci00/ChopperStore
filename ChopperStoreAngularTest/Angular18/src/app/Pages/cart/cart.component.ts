@@ -15,7 +15,7 @@ import { CheckoutDialogComponent } from './checkout-dialog/checkout-dialog.compo
   styleUrl: './cart.component.scss',
 })
 export class CartComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['skin', 'price', 'quantity', 'subtotal', 'actions'];
+  displayedColumns = ['skin', 'price', 'actions'];
   dataSource = new MatTableDataSource<Item>([]);
   cart: ShoppingCart | null = null;
   total = 0;
@@ -53,12 +53,7 @@ export class CartComponent implements OnInit, AfterViewInit {
   }
 
   recalcTotal() {
-    this.total = this.cart?.items.reduce((acc, i) => acc + i.skin.price * i.quantity, 0) ?? 0;
-  }
-
-  updateQuantity(item: Item, quantity: number) {
-    if (quantity < 1) return;
-    this._cartService.updateItem(item.id, { quantity }).subscribe(() => this.loadCart());
+    this.total = this.cart?.items.reduce((acc, i) => acc + i.skin.price, 0) ?? 0;
   }
 
   removeItem(itemId: number) {

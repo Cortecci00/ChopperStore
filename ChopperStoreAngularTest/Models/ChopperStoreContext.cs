@@ -37,7 +37,7 @@ namespace ChopperStoreAngularTest.Models
             modelBuilder.Entity<TransactionItem>()
                 .HasOne(ti => ti.skin)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<TransactionItem>()
                 .HasOne(ti => ti.transaction)

@@ -1,4 +1,4 @@
-<div style="margin-top:4em" class="container">
+<div style="margin-top:4em; margin-bottom:4em" class="container">
   <div class="flex-c" style="margin-top:4em; align-items:center">
     <div style="display:flex; flex-direction:column">
       <p class="semibold" style="font-size:64px">Tienda</p>
@@ -22,13 +22,13 @@
     <mat-card *ngFor="let skin of skins" (click)="goToDetail(skin.id)" style="padding: 10px; cursor:pointer;" class="example-card mat-card-color shadow">
       <img mat-card-image [src]="skin.photoUrl ?? 'https://material.angular.io/assets/img/examples/shiba1.jpg'" style="height:180px; object-fit:cover; border-radius:6px" />
       <mat-card-header class="mat-card-header">
-        <mat-card-title>{{skin.name}}</mat-card-title>
-        <mat-card-subtitle>{{skin.rarity}} · {{skin.category.name}}</mat-card-subtitle>
+        <mat-card-title class="product-card-title">{{skin.name}}</mat-card-title>
       </mat-card-header>
       <mat-card-content class="mat-card-color">
-        <p class="semibold" style="font-size:20px; color:#D9697D">${{skin.price}}</p>
+        <p class="product-detail-line" style="color:#828282">{{skin.rarity}} · {{skin.category.name}}</p>
+        <p class="product-detail-line semibold" style="font-size:20px; color:#D9697D">${{skin.price}}</p>
       </mat-card-content>
-      <div style="display:flex; justify-content:flex-end; padding-bottom:8px">
+      <div class="product-action">
         <button style="background-color: #D9697D; color: white;" class="btn" mat-flat-button (click)="addToCart(skin, $event)">Agregar al carrito</button>
       </div>
     </mat-card>

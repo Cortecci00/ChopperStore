@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Skin } from '../../Interfaces';
 import { SkinService } from '../../Services/skin.service';
@@ -15,7 +14,6 @@ import { AuthServiceTsService } from '../../Services/auth.service.ts.service';
 export class ProductComponent implements OnInit {
   skin: Skin | null = null;
   isLoading = true;
-  quantity = new FormControl(1, [Validators.required, Validators.min(1)]);
 
   constructor(
     private _route: ActivatedRoute,
@@ -42,21 +40,21 @@ export class ProductComponent implements OnInit {
       this._router.navigate(['/login']);
       return;
     }
-    if (this.quantity.invalid || !this.skin) return;
+    if (!this.skin) return;
 
-    this._cartService
-      .addItem({ skinId: this.skin.id, quantity: this.quantity.value! })
-      .subscribe({
-        next: () =>
-          this._snackBar.open('Agregado al carrito', 'Cerrar', {
-            duration: 2000,
-            panelClass: ['snackbar-success'],
-          }),
-        error: () =>
-          this._snackBar.open('No se pudo agregar al carrito', 'Cerrar', {
-            duration: 3000,
-            panelClass: ['snackbar-error'],
-          }),
-      });
+    this._cartService.addItem({ skinId: this.skin.id, quantity: 1 }).subscribe({
+      next: () =>
+        this._snackBar.open('Agregado al carrito', 'Cerrar', {
+          duration: 2000,
+          panelClass: ['snackbar-success'],
+        }),
+      error: (err) => {
+        this._snackBar.open(err.error?.message ?? 'No se pudo agregar al carrito', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+        });
+        this._router.navigate(['/products']);
+      },
+    });
   }
 }

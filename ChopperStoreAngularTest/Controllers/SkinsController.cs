@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
 using ChopperStoreAngularTest.Models.Dtos;
+using ChopperStoreAngularTest.Services;
 
 namespace ChopperStoreAngularTest.Controllers
 {
@@ -10,18 +11,41 @@ namespace ChopperStoreAngularTest.Controllers
     [ApiController]
     public class SkinsController : ControllerBase
     {
-        private readonly ChopperStoreContext _context;
+        private static readonly TimeSpan ReservationWindow = TimeSpan.FromMinutes(30);
 
-        public SkinsController(ChopperStoreContext context)
+        private readonly ChopperStoreContext _context;
+        private readonly ISkinStockService _skinStockService;
+
+        public SkinsController(ChopperStoreContext context, ISkinStockService skinStockService)
         {
             _context = context;
+            _skinStockService = skinStockService;
+        }
+
+        private async Task<List<int>> GetReservedSkinIdsAsync()
+        {
+            var cutoff = DateTime.UtcNow - ReservationWindow;
+            return await _context.transactionItems
+                .Where(ti => ti.SkinId != null
+                    && ti.transaction.PaymentStatus == "pending"
+                    && ti.transaction.transactionDate > cutoff)
+                .Select(ti => ti.SkinId!.Value)
+                .ToListAsync();
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] bool storefrontOnly = false)
         {
-            var skins = await _context.skins.Include(s => s.category).ToListAsync();
+            var query = _context.skins.Include(s => s.category).AsQueryable();
+
+            if (storefrontOnly)
+            {
+                var reservedSkinIds = await GetReservedSkinIdsAsync();
+                query = query.Where(s => !reservedSkinIds.Contains(s.Id));
+            }
+
+            var skins = await query.ToListAsync();
             return Ok(new Response<IEnumerable<Skin>>
             {
                 IsSuccess = true,
@@ -55,11 +79,18 @@ namespace ChopperStoreAngularTest.Controllers
 
         [AllowAnonymous]
         [HttpGet("by-category/{categoryId}")]
-        public async Task<IActionResult> GetByCategory(int categoryId)
+        public async Task<IActionResult> GetByCategory(int categoryId, [FromQuery] bool storefrontOnly = false)
         {
-            var skins = await _context.skins.Include(s => s.category)
-                .Where(s => s.category.Id == categoryId)
-                .ToListAsync();
+            var query = _context.skins.Include(s => s.category)
+                .Where(s => s.category.Id == categoryId);
+
+            if (storefrontOnly)
+            {
+                var reservedSkinIds = await GetReservedSkinIdsAsync();
+                query = query.Where(s => !reservedSkinIds.Contains(s.Id));
+            }
+
+            var skins = await query.ToListAsync();
 
             return Ok(new Response<IEnumerable<Skin>>
             {
@@ -185,8 +216,7 @@ namespace ChopperStoreAngularTest.Controllers
                 });
             }
 
-            _context.skins.Remove(skin);
-            await _context.SaveChangesAsync();
+            await _skinStockService.RemoveSkinAsync(id);
 
             return Ok(new Response<Skin>
             {

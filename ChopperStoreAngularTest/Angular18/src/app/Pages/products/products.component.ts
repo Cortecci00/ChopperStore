@@ -39,8 +39,8 @@ export class ProductsComponent implements OnInit {
   loadSkins() {
     this.isLoading = true;
     const obs = this.selectedCategoryId
-      ? this._skinService.getByCategory(this.selectedCategoryId)
-      : this._skinService.getAll();
+      ? this._skinService.getByCategory(this.selectedCategoryId, true)
+      : this._skinService.getAll(true);
 
     obs.subscribe({
       next: (r) => {
@@ -54,6 +54,7 @@ export class ProductsComponent implements OnInit {
   onCategoryChange(id: number | null) {
     this.selectedCategoryId = id;
     this.loadSkins();
+    window.scrollTo(0, 0);
   }
 
   goToDetail(id: number) {
@@ -72,11 +73,13 @@ export class ProductsComponent implements OnInit {
           duration: 2000,
           panelClass: ['snackbar-success'],
         }),
-      error: () =>
-        this._snackBar.open('No se pudo agregar al carrito', 'Cerrar', {
+      error: (err) => {
+        this._snackBar.open(err.error?.message ?? 'No se pudo agregar al carrito', 'Cerrar', {
           duration: 3000,
           panelClass: ['snackbar-error'],
-        }),
+        });
+        this.loadSkins();
+      },
     });
   }
 }

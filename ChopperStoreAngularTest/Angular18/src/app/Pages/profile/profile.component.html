@@ -64,9 +64,9 @@
         <td style="color:black" mat-cell *matCellDef="let element"> {{element.transactionDate | date:'short'}} </td>
       </ng-container>
 
-      <ng-container matColumnDef="itemCount">
-        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Items </th>
-        <td style="color:black" mat-cell *matCellDef="let element"> {{element.items.length}} </td>
+      <ng-container matColumnDef="product">
+        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Producto </th>
+        <td style="color:black" mat-cell *matCellDef="let element"> {{getItemNames(element)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="total">
