@@ -6,6 +6,10 @@
   font-weight: 500;
 }
 
+.shadow {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10) !important;
+}
+
 
 .center {
   margin: auto;
@@ -14,11 +18,19 @@
   padding: 10px;
 }
 
+.auth-card {
+  margin: 5em auto 5em;
+  max-width: 440px;
+  background-color: white;
+  border-radius: 16px;
+  padding: 2.5em 2em;
+}
+
 .example-form {
   margin: auto;
   min-width: 150px;
   max-width: 300px;
-  width: 50%;
+  width: 100%;
 }
 
 .example-full-width {
@@ -26,13 +38,11 @@
 }
 
 .container {
-  width: 20%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-left: 40%;
-  margin-right: 40%;
 }
 
 .line {
@@ -42,12 +52,14 @@
 .text {
   padding-left: 10px;
   padding-right: 10px;
+  white-space: nowrap;
+  color: #828282;
 }
 
 .btn {
   border-radius: 10px;
   min-height: 50px;
-  min-width: 300px;
+  width: 100%;
 }
 
 .google {

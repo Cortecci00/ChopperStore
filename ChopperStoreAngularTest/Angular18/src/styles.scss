@@ -23,6 +23,12 @@ a {
   color: white !important;
 }
 
+.mat-mdc-dialog-surface, .mdc-dialog__surface {
+  background-color: white !important;
+  color: #333 !important;
+  border-radius: 14px !important;
+}
+
 .mdc-text-field--outlined {
   --mdc-outlined-text-field-container-shape: 10px;
 }

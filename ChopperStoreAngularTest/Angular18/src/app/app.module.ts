@@ -21,6 +21,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './Interceptors/auth.interceptor';
@@ -77,6 +78,7 @@ import { CheckoutDialogComponent } from './Pages/cart/checkout-dialog/checkout-d
     MatSelectModule,
     MatSnackBarModule,
     MatBadgeModule,
+    MatProgressSpinnerModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule

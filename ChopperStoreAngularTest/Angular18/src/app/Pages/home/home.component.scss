@@ -3,7 +3,7 @@
 }
 
 .shadow {
-  box-shadow: 0 2px 15px 2px grey !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10) !important;
 }
 
 .bold {
@@ -73,24 +73,52 @@ html {
   width: 100%;
 }
 
-.container .btn {
+.hero-image-container {
+  position: relative;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image {
+  width: 100%;
+  display: block;
+}
+
+.hero-overlay {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 60%);
+}
+
+.hero-btn {
+  position: absolute;
+  bottom: 24px;
   background-color: #D9697D;
   color: white;
   font-size: 16px;
   padding: 12px 24px;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 8px;
   text-align: center;
+  transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
-.container .btn:hover {
-  background-color: black;
+.hero-btn:hover {
+  background-color: #c25365;
+}
+
+.hero-btn:active {
+  transform: scale(0.97);
+}
+
+.news-image {
+  border-radius: 14px;
+  margin-top: 1em;
 }
 
 .flex-container {

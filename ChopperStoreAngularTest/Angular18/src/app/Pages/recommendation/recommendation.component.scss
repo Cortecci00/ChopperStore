@@ -7,7 +7,7 @@
 }
 
 .shadow {
-  box-shadow: 0 2px 15px 2px grey !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10) !important;
 }
 
 .btn {
@@ -29,11 +29,18 @@
 
 .example-card {
   max-width: 400px;
+  border-radius: 14px;
 }
 
-.example-header-image {
-  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+.user-avatar {
+  background-color: #D9697D;
   background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
 }
 
 .mat-card-color {
