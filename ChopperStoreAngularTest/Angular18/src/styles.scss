@@ -18,6 +18,11 @@ a {
   text-decoration: none;
 }
 
+.cart-badge .mat-badge-content {
+  background-color: #e53935 !important;
+  color: white !important;
+}
+
 .mdc-text-field--outlined {
   --mdc-outlined-text-field-container-shape: 10px;
 }

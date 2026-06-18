@@ -27,7 +27,8 @@
     </a>
 
     <ng-container *ngIf="usuarioLogueado">
-      <button mat-icon-button routerLink="/cart" aria-label="Carrito" style="color:white">
+      <button mat-icon-button routerLink="/cart" aria-label="Carrito" style="color:white" class="cart-badge"
+              [matBadge]="cartCount" [matBadgeHidden]="cartCount === 0">
         <mat-icon>shopping_cart</mat-icon>
       </button>
       <button mat-icon-button routerLink="/profile" aria-label="Mi perfil" style="color:white">
