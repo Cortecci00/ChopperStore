@@ -1,5 +1,5 @@
 <header>
-  <mat-toolbar style="min-height: 100px; background-color: #D9697D;" class="shadow">
+  <mat-toolbar style="min-height: 100px; background-color: #D9697D;" class="shadow navbar-toolbar">
     <span class="spacer1"></span>
     <a routerLink="/" style="display:flex; align-items:center;">
       <img width="120" height="120" src="/chopper-logotransparente.png" />
@@ -9,35 +9,41 @@
     </a>
     <span class="example-spacer"></span>
 
-    <a class="html" routerLink="/products" style="font-family: Calibri; color: white; margin-right: 1.5em;">
-      Tienda
-    </a>
-    <a class="html" routerLink="/us" style="font-family: Calibri; color: white; margin-right: 1.5em;">
-      Nosotros
-    </a>
-    <a class="html" routerLink="/recommendation" style="font-family: Calibri; color: white; margin-right: 1.5em;">
-      Recomendaciones
-    </a>
-    <a class="html" routerLink="/contact" style="font-family: Calibri; color: white; margin-right: 1.5em;">
-      Contacto
-    </a>
+    <button mat-icon-button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menú" style="color:white">
+      <mat-icon>{{ menuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
 
-    <a *ngIf="!usuarioLogueado" class="html" routerLink="/login" style="font-family: Calibri; color: white;">
-      Login / Register
-    </a>
+    <nav class="nav-links" [class.open]="menuOpen">
+      <a class="html" routerLink="/products" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+        Tienda
+      </a>
+      <a class="html" routerLink="/us" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+        Nosotros
+      </a>
+      <a class="html" routerLink="/recommendation" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+        Recomendaciones
+      </a>
+      <a class="html" routerLink="/contact" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+        Contacto
+      </a>
 
-    <ng-container *ngIf="usuarioLogueado">
-      <button mat-icon-button routerLink="/cart" aria-label="Carrito" style="color:white" class="cart-badge"
-              [matBadge]="cartCount" [matBadgeHidden]="cartCount === 0">
-        <mat-icon>shopping_cart</mat-icon>
-      </button>
-      <button mat-icon-button routerLink="/profile" aria-label="Mi perfil" style="color:white">
-        <mat-icon>person</mat-icon>
-      </button>
-      <button mat-icon-button (click)="logout()" aria-label="Cerrar sesión" style="color:white">
-        <mat-icon>exit_to_app</mat-icon>
-      </button>
-    </ng-container>
+      <a *ngIf="!usuarioLogueado" class="html" routerLink="/login" style="font-family: Calibri; color: white;">
+        Login / Register
+      </a>
+
+      <ng-container *ngIf="usuarioLogueado">
+        <button mat-icon-button routerLink="/cart" aria-label="Carrito" style="color:white" class="cart-badge"
+                [matBadge]="cartCount" [matBadgeHidden]="cartCount === 0">
+          <mat-icon>shopping_cart</mat-icon>
+        </button>
+        <button mat-icon-button routerLink="/profile" aria-label="Mi perfil" style="color:white">
+          <mat-icon>person</mat-icon>
+        </button>
+        <button mat-icon-button (click)="logout()" aria-label="Cerrar sesión" style="color:white">
+          <mat-icon>exit_to_app</mat-icon>
+        </button>
+      </ng-container>
+    </nav>
     <span class="spacer1"></span>
   </mat-toolbar>
 </header>

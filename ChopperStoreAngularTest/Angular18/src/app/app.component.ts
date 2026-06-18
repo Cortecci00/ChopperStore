@@ -17,6 +17,7 @@ export class AppComponent {
   usuarioLogueado = false;
   isAdmin = false;
   cartCount = 0;
+  menuOpen = false;
 
   constructor(
     public iconSet: IconSetService,
@@ -31,10 +32,15 @@ export class AppComponent {
 
     this._router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
       this.refreshAuthState();
+      this.menuOpen = false;
       if (isPlatformBrowser(this._platformId)) {
         window.scrollTo(0, 0);
       }
     });
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
   }
 
   refreshAuthState() {
