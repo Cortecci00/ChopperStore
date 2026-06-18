@@ -1,15 +1,14 @@
-﻿/**//*using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
+using ChopperStoreAngularTest.Models.Dtos;
 
 namespace ChopperStoreAngularTest.Controllers
 {
-    public class SkinsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SkinsController : ControllerBase
     {
         private readonly ChopperStoreContext _context;
 
@@ -18,140 +17,183 @@ namespace ChopperStoreAngularTest.Controllers
             _context = context;
         }
 
-        // GET: Skins
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            return View(await _context.skins.ToListAsync());
+            var skins = await _context.skins.Include(s => s.category).ToListAsync();
+            return Ok(new Response<IEnumerable<Skin>>
+            {
+                IsSuccess = true,
+                Message = "Listado de skins",
+                Result = skins
+            });
         }
 
-        // GET: Skins/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var skin = await _context.skins
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var skin = await _context.skins.Include(s => s.category).FirstOrDefaultAsync(s => s.Id == id);
             if (skin == null)
             {
-                return NotFound();
-            }
-
-            return View(skin);
-        }
-
-        // GET: Skins/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Skins/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,name,skinFloat,pattern,rarity,price")] Skin skin)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(skin);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(skin);
-        }
-
-        // GET: Skins/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var skin = await _context.skins.FindAsync(id);
-            if (skin == null)
-            {
-                return NotFound();
-            }
-            return View(skin);
-        }
-
-        // POST: Skins/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,name,skinFloat,pattern,rarity,price")] Skin skin)
-        {
-            if (id != skin.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                return NotFound(new Response<Skin>
                 {
-                    _context.Update(skin);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SkinExists(skin.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    IsSuccess = false,
+                    Message = "No se encontró la skin",
+                    Result = null
+                });
             }
-            return View(skin);
+
+            return Ok(new Response<Skin>
+            {
+                IsSuccess = true,
+                Message = "Se encontró la skin",
+                Result = skin
+            });
         }
 
-        // GET: Skins/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [AllowAnonymous]
+        [HttpGet("by-category/{categoryId}")]
+        public async Task<IActionResult> GetByCategory(int categoryId)
         {
-            if (id == null)
+            var skins = await _context.skins.Include(s => s.category)
+                .Where(s => s.category.Id == categoryId)
+                .ToListAsync();
+
+            return Ok(new Response<IEnumerable<Skin>>
             {
-                return NotFound();
+                IsSuccess = true,
+                Message = "Listado de skins por categoría",
+                Result = skins
+            });
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] SkinCreateUpdateDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<SkinCreateUpdateDto>
+                {
+                    IsSuccess = false,
+                    Message = "Datos inválidos",
+                    Result = model
+                });
             }
 
-            var skin = await _context.skins
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var categoria = await _context.categories.FindAsync(model.categoryId);
+            if (categoria == null)
+            {
+                return BadRequest(new Response<SkinCreateUpdateDto>
+                {
+                    IsSuccess = false,
+                    Message = $"No existe una categoría con el id {model.categoryId}",
+                    Result = model
+                });
+            }
+
+            var skin = new Skin
+            {
+                name = model.name,
+                skinFloat = model.skinFloat,
+                pattern = model.pattern,
+                rarity = model.rarity,
+                price = model.price,
+                category = categoria,
+                PhotoUrl = model.photoUrl
+            };
+
+            await _context.skins.AddAsync(skin);
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<Skin>
+            {
+                IsSuccess = true,
+                Message = "Skin creada correctamente",
+                Result = skin
+            });
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] SkinCreateUpdateDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<SkinCreateUpdateDto>
+                {
+                    IsSuccess = false,
+                    Message = "Datos inválidos",
+                    Result = model
+                });
+            }
+
+            var skin = await _context.skins.FirstOrDefaultAsync(s => s.Id == id);
             if (skin == null)
             {
-                return NotFound();
+                return NotFound(new Response<SkinCreateUpdateDto>
+                {
+                    IsSuccess = false,
+                    Message = $"No se encontró una skin con el id {id}",
+                    Result = model
+                });
             }
 
-            return View(skin);
-        }
-
-        // POST: Skins/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var skin = await _context.skins.FindAsync(id);
-            if (skin != null)
+            var categoria = await _context.categories.FindAsync(model.categoryId);
+            if (categoria == null)
             {
-                _context.skins.Remove(skin);
+                return BadRequest(new Response<SkinCreateUpdateDto>
+                {
+                    IsSuccess = false,
+                    Message = $"No existe una categoría con el id {model.categoryId}",
+                    Result = model
+                });
             }
+
+            skin.name = model.name;
+            skin.skinFloat = model.skinFloat;
+            skin.pattern = model.pattern;
+            skin.rarity = model.rarity;
+            skin.price = model.price;
+            skin.category = categoria;
+            if (model.photoUrl != null) skin.PhotoUrl = model.photoUrl;
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Ok(new Response<Skin>
+            {
+                IsSuccess = true,
+                Message = "Skin actualizada",
+                Result = skin
+            });
         }
 
-        private bool SkinExists(int id)
+        [Authorize(Policy = "AdminOnly")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return _context.skins.Any(e => e.Id == id);
+            var skin = await _context.skins.FirstOrDefaultAsync(s => s.Id == id);
+            if (skin == null)
+            {
+                return NotFound(new Response<Skin>
+                {
+                    IsSuccess = false,
+                    Message = "No se encontró la skin",
+                    Result = null
+                });
+            }
+
+            _context.skins.Remove(skin);
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<Skin>
+            {
+                IsSuccess = true,
+                Message = "Skin eliminada",
+                Result = skin
+            });
         }
     }
 }
-*/

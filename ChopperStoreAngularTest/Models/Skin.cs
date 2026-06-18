@@ -10,6 +10,7 @@ namespace ChopperStoreAngularTest.Models
         public string rarity { get; set; }
         public double price { get; set; }
         public Category category { get; set; }
+        public string? PhotoUrl { get; set; }
 
     }
 }

@@ -1,15 +1,15 @@
-﻿/*using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
+using ChopperStoreAngularTest.Models.Dtos;
 
 namespace ChopperStoreAngularTest.Controllers
 {
-    public class RecommendationsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RecommendationsController : ControllerBase
     {
         private readonly ChopperStoreContext _context;
 
@@ -18,140 +18,83 @@ namespace ChopperStoreAngularTest.Controllers
             _context = context;
         }
 
-        // GET: Recommendations
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.recommendations.ToListAsync());
-        }
+        private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        private bool IsAdmin => User.FindFirstValue("isAdmin") == "true";
 
-        // GET: Recommendations/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            if (id == null)
+            var recomendaciones = await _context.recommendations.Include(r => r.usuario).ToListAsync();
+            return Ok(new Response<IEnumerable<Recommendation>>
             {
-                return NotFound();
-            }
-
-            var recommendation = await _context.recommendations
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (recommendation == null)
-            {
-                return NotFound();
-            }
-
-            return View(recommendation);
+                IsSuccess = true,
+                Message = "Listado de recomendaciones",
+                Result = recomendaciones
+            });
         }
 
-        // GET: Recommendations/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Recommendations/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,text")] Recommendation recommendation)
+        public async Task<IActionResult> Create([FromBody] RecommendationCreateDto model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(recommendation);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(recommendation);
-        }
-
-        // GET: Recommendations/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var recommendation = await _context.recommendations.FindAsync(id);
-            if (recommendation == null)
-            {
-                return NotFound();
-            }
-            return View(recommendation);
-        }
-
-        // POST: Recommendations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,text")] Recommendation recommendation)
-        {
-            if (id != recommendation.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                return BadRequest(new Response<RecommendationCreateDto>
                 {
-                    _context.Update(recommendation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RecommendationExists(recommendation.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    IsSuccess = false,
+                    Message = "Datos inválidos",
+                    Result = model
+                });
             }
-            return View(recommendation);
-        }
 
-        // GET: Recommendations/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+            var usuario = await _context.users.FindAsync(CurrentUserId);
+            if (usuario == null)
             {
-                return NotFound();
+                return Unauthorized();
             }
 
-            var recommendation = await _context.recommendations
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (recommendation == null)
-            {
-                return NotFound();
-            }
-
-            return View(recommendation);
-        }
-
-        // POST: Recommendations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var recommendation = await _context.recommendations.FindAsync(id);
-            if (recommendation != null)
-            {
-                _context.recommendations.Remove(recommendation);
-            }
-
+            var recomendacion = new Recommendation { usuario = usuario, text = model.Text };
+            await _context.recommendations.AddAsync(recomendacion);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Ok(new Response<Recommendation>
+            {
+                IsSuccess = true,
+                Message = "Recomendación creada correctamente",
+                Result = recomendacion
+            });
         }
 
-        private bool RecommendationExists(int id)
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return _context.recommendations.Any(e => e.Id == id);
+            var recomendacion = await _context.recommendations.Include(r => r.usuario).FirstOrDefaultAsync(r => r.Id == id);
+            if (recomendacion == null)
+            {
+                return NotFound(new Response<Recommendation>
+                {
+                    IsSuccess = false,
+                    Message = "No se encontró la recomendación",
+                    Result = null
+                });
+            }
+
+            if (recomendacion.usuario.Id != CurrentUserId && !IsAdmin)
+            {
+                return Forbid();
+            }
+
+            _context.recommendations.Remove(recomendacion);
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<Recommendation>
+            {
+                IsSuccess = true,
+                Message = "Recomendación eliminada",
+                Result = recomendacion
+            });
         }
     }
 }
-*/

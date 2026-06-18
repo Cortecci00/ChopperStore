@@ -1,0 +1,12 @@
+<h2 class="semibold" style="font-family:Calibri; padding:1em 1em 0 1em">Contanos tu experiencia</h2>
+<div mat-dialog-content style="padding:0 1em">
+  <mat-form-field appearance="outline" style="width:100%">
+    <mat-label style="color: #828282">Tu recomendación</mat-label>
+    <textarea matInput rows="5" maxlength="900" [formControl]="text" style="color:#828282"></textarea>
+    <mat-hint align="end">{{text.value?.length ?? 0}} / 900</mat-hint>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions style="display:flex; justify-content:flex-end; gap:1em; padding:0 1em 1em 1em">
+  <button class="btn" mat-flat-button (click)="cancel()">Cancelar</button>
+  <button style="background-color: #D9697D; color: white;" class="btn" mat-flat-button (click)="submit()" [disabled]="text.invalid">Crear</button>
+</div>

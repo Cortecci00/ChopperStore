@@ -1,5 +1,5 @@
 
-  <div class="flex-container" style="margin-bottom:4em">
+  <form [formGroup]="formContact" (ngSubmit)="send()" class="flex-container" style="margin-bottom:4em">
     <div class="flex-item-left" style="margin-top: 4em">
       <p class="semibold" style="font-size:64px">Contacto</p>
       <p style="color: #828282; font-size: 24px">¿Alguna pregunta o sugerencia? ¡Nos encantaría escucharte!</p>
@@ -8,7 +8,8 @@
           <p class="semibold">Nombre</p>
           <mat-form-field appearance="outline" class="example-full-width">
             <mat-label style="color: #828282">Ingresá tu nombre</mat-label>
-            <input style="color: #828282" matInput />
+            <input style="color: #828282" matInput formControlName="name" />
+            <mat-error *ngIf="submitted && formContact.get('name')?.invalid">El nombre es obligatorio</mat-error>
           </mat-form-field>
         </div>
         <span class="space"></span>
@@ -17,7 +18,8 @@
             <p class="semibold">Apellido</p>
             <mat-form-field appearance="outline" class="example-full-width">
               <mat-label style="color: #828282">Ingresá tu apellido</mat-label>
-              <input style="color: #828282" matInput />
+              <input style="color: #828282" matInput formControlName="lastname" />
+              <mat-error *ngIf="submitted && formContact.get('lastname')?.invalid">El apellido es obligatorio</mat-error>
             </mat-form-field>
           </div>
         </div>
@@ -25,19 +27,19 @@
       <p class="semibold">Email</p>
       <mat-form-field appearance="outline" class="example-full-width">
         <mat-label style="color: #828282">Ingresá tu email</mat-label>
-        <input style="color: #828282" matInput />
+        <input style="color: #828282" matInput formControlName="email" />
+        <mat-error *ngIf="submitted && formContact.get('email')?.invalid">Ingresá un email válido</mat-error>
       </mat-form-field>
       <p class="semibold">Mensaje</p>
-      <form class="example-form">
-        <mat-form-field appearance="outline" class="example-full-width-txt">
-          <mat-label style="color: #828282">Ingresa tu mensaje</mat-label>
-          <textarea rows="10"matInput style="color: #828282" #message  maxlength="900"></textarea>
-          <mat-hint align="start"><strong>No agregue información personal</strong> </mat-hint>
-          <mat-hint align="end">{{message.value.length}} / 900</mat-hint>
-        </mat-form-field>
-      </form>
+      <mat-form-field appearance="outline" class="example-full-width-txt">
+        <mat-label style="color: #828282">Ingresa tu mensaje</mat-label>
+        <textarea rows="10" matInput style="color: #828282" formControlName="message" maxlength="900"></textarea>
+        <mat-hint align="start"><strong>No agregue información personal</strong> </mat-hint>
+        <mat-hint align="end">{{formContact.get('message')?.value?.length ?? 0}} / 900</mat-hint>
+        <mat-error *ngIf="submitted && formContact.get('message')?.invalid">El mensaje es obligatorio</mat-error>
+      </mat-form-field>
       <div class="btncontainer" style=" margin-top: 3em; display: flex; align-items: center;">
-        <button style="color: white; background-color: #D9697D;" class="btn" mat-flat-button>Enviar</button>
+        <button type="submit" style="color: white; background-color: #D9697D;" class="btn" mat-flat-button>Enviar</button>
       </div>
     </div>
     <div class="flex-item-right">
@@ -46,4 +48,4 @@
         <p class="p">Nuestro email: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ChopperStore&#64;gmail.com</p>
       </div>
     </div>
-  </div>
+  </form>

@@ -25,8 +25,9 @@
   <p class="semibold">Contraseña</p>
   <mat-form-field appearance="outline" class="example-full-width">
     <mat-label style="color: #828282">Ingresá tu contraseña</mat-label>
-    <input style="color: #828282" matInput [type]="hide() ? 'password' : 'text'" />
+    <input style="color: #828282" matInput [type]="hide() ? 'password' : 'text'" [formControl]="password" required />
     <button mat-icon-button
+            type="button"
             matSuffix
             (click)="clickEvent($event)"
             [attr.aria-label]="'Ocultar contraseña'"

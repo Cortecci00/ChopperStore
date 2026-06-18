@@ -16,8 +16,14 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator'
-import { HttpClientModule } from '@angular/common/http';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
+import { AuthInterceptor } from './Interceptors/auth.interceptor';
+import { ErrorInterceptor } from './Interceptors/error.interceptor';
 import { HomeComponent } from './Pages/home/home.component';
 import { LoginComponent } from './Pages/login/login.component';
 import { RegisterComponent } from './Pages/register/register.component';
@@ -27,7 +33,9 @@ import { CartComponent } from './Pages/cart/cart.component';
 import { UsComponent } from './Pages/us/us.component';
 import { ContactComponent } from './Pages/contact/contact.component';
 import { RecommendationComponent } from './Pages/recommendation/recommendation.component';
+import { RecommendationDialogComponent } from './Pages/recommendation/recommendation-dialog/recommendation-dialog.component';
 import { ProfileComponent } from './Pages/profile/profile.component';
+import { AdminComponent } from './Pages/admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +49,9 @@ import { ProfileComponent } from './Pages/profile/profile.component';
     UsComponent,
     ContactComponent,
     RecommendationComponent,
+    RecommendationDialogComponent,
     ProfileComponent,
+    AdminComponent,
   ],
   imports: [
     MatPaginatorModule,
@@ -59,6 +69,10 @@ import { ProfileComponent } from './Pages/profile/profile.component';
     MatIconModule,
     MatButtonModule,
     MatToolbarModule,
+    MatDialogModule,
+    MatTabsModule,
+    MatSelectModule,
+    MatSnackBarModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule
@@ -66,10 +80,10 @@ import { ProfileComponent } from './Pages/profile/profile.component';
   providers: [
     IconSetService,
     provideClientHydration(),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
-

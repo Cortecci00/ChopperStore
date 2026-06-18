@@ -5,39 +5,40 @@
 <div style="margin-top: 4em;" class="flex-container">
   <div class="flex-item-left">
     <div style="display: flex; flex-direction:column; align-items:center; justify-content:center">
-      <img src="https://material.angular.io/assets/img/examples/shiba2.jpg" class="company shadow">
-      <button style="margin-top:2em;background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button>Cargar foto</button>
+      <img [src]="photoPreview ?? 'https://material.angular.io/assets/img/examples/shiba2.jpg'" class="company shadow">
+      <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
+      <button style="margin-top:2em;background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button (click)="triggerFileInput()">Cargar foto</button>
     </div>
   </div>
   <div class="flex-item-right">
     <div class="container">
-      <div style="display: flex; flex-direction:column; align-items:center;">
+      <form [formGroup]="formProfile" (ngSubmit)="saveProfile()" style="display: flex; flex-direction:column; align-items:center;">
         <div class="example-form">
           <p class="semibold">Nombre</p>
           <mat-form-field appearance="outline" class="example-full-width">
-            <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
-            <input style="color: #828282" matInput />
+            <mat-label style="color: #828282">Ingresá tu nombre</mat-label>
+            <input style="color: #828282" matInput formControlName="name" />
           </mat-form-field>
           <p class="semibold">Apellido</p>
           <mat-form-field appearance="outline" class="example-full-width">
-            <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
-            <input style="color: #828282" matInput />
+            <mat-label style="color: #828282">Ingresá tu apellido</mat-label>
+            <input style="color: #828282" matInput formControlName="lastname" />
           </mat-form-field>
           <p class="semibold">Mail</p>
           <mat-form-field appearance="outline" class="example-full-width">
-            <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
-            <input style="color: #828282" matInput />
+            <mat-label style="color: #828282">Ingresá tu mail</mat-label>
+            <input style="color: #828282" matInput formControlName="email" />
           </mat-form-field>
           <p class="semibold">Telefono</p>
           <mat-form-field appearance="outline" class="example-full-width">
-            <mat-label style="color: #828282">Ingresá tu usuario</mat-label>
-            <input style="color: #828282" matInput />
+            <mat-label style="color: #828282">Ingresá tu teléfono</mat-label>
+            <input style="color: #828282" matInput formControlName="phone" />
           </mat-form-field>
           <div style="display:flex;justify-content:center">
-            <button style="margin-top:2em;background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button>Editar</button>
+            <button type="submit" style="margin-top:2em;background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button [disabled]="formProfile.invalid">Guardar</button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </div>
@@ -47,31 +48,29 @@
   <div style="margin-top:4em; border-radius:10px; padding:24px; margin-left:5%; margin-right:5%; margin-bottom:4em" class="mat-elevation-z8 shadow">
     <table mat-table [dataSource]="dataSource" style="background-color:white">
 
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Name </th>
-        <td style="color:black" mat-cell *matCellDef="let element"> {{element.name}} </td>
-      </ng-container>
-
-      <!-- Weight Column -->
-      <ng-container matColumnDef="price">
-        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Price </th>
-        <td style="color:black" mat-cell *matCellDef="let element"> {{element.price}} </td>
-      </ng-container>
-
-      <!-- Symbol Column -->
       <ng-container matColumnDef="date">
-        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Date </th>
-        <td style="color:black" mat-cell *matCellDef="let element"> {{element.date}} </td>
+        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Fecha </th>
+        <td style="color:black" mat-cell *matCellDef="let element"> {{element.transactionDate | date:'short'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="itemCount">
+        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Items </th>
+        <td style="color:black" mat-cell *matCellDef="let element"> {{element.items.length}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Total </th>
+        <td style="color:black" mat-cell *matCellDef="let element"> ${{element.totalPrice}} </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
     <mat-divider></mat-divider>
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+  <mat-paginator [length]="dataSource.data.length"
+                 [pageSizeOptions]="[5, 10, 20]"
                  showFirstLastButtons
-                 aria-label="Select page of periodic elements">
+                 aria-label="Historial de compras">
   </mat-paginator>
 </div>
 </div>

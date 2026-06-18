@@ -6,50 +6,29 @@
     </div>
     <span style="flex:1"></span>
     <div style="display: flex;align-items:center">
-      <button style="background-color: #D9697D; color: white;" class="btn" mat-flat-button>Crear</button>
+      <button style="background-color: #D9697D; color: white;" class="btn" mat-flat-button (click)="openCreateDialog()">Crear</button>
     </div>
   </div>
 
+  <div *ngIf="recommendations.length === 0" style="margin-top:4em; text-align:center; color:#828282">
+    Todavía no hay recomendaciones. ¡Sé el primero en dejar una!
+  </div>
+
   <div style="margin-top:4em" class="rgrid">
-    <mat-card style="padding: 10px;" class="example-card mat-card-color shadow">
+    <mat-card *ngFor="let rec of recommendations" style="padding: 10px;" class="example-card mat-card-color shadow">
       <mat-card-header class="mat-card-header">
         <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>Example</mat-card-title>
-        <mat-card-subtitle>Example</mat-card-subtitle>
+        <mat-card-title>{{rec.usuario.username}}</mat-card-title>
       </mat-card-header>
       <mat-card-content class="mat-card-color">
-        <p>
-          Example textExample textExample textExample textExample textExample textExample textExample textExample textExample textExample tex
-        </p>
+        <p>{{rec.text}}</p>
       </mat-card-content>
+      <div *ngIf="canDelete(rec)" style="display:flex; justify-content:flex-end">
+        <button mat-icon-button (click)="deleteRecommendation(rec.id)" aria-label="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </mat-card>
-
-    <mat-card style="padding: 10px;" class="example-card mat-card-color shadow">
-      <mat-card-header class="mat-card-header">
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>Example</mat-card-title>
-        <mat-card-subtitle>Example</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content class="mat-card-color">
-        <p>
-          Example textExample textExample textExample textExample textExample textExample textExample textExample textExample textExample tex
-        </p>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card style="padding: 10px;" class="example-card mat-card-color shadow">
-      <mat-card-header class="mat-card-header">
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>Example</mat-card-title>
-        <mat-card-subtitle>Example</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content class="mat-card-color">
-        <p>
-          Example textExample textExample textExample textExample textExample textExample textExample textExample textExample textExample tex
-        </p>
-      </mat-card-content>
-    </mat-card>
-  </div> 
+  </div>
 
 </div>
-

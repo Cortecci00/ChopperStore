@@ -10,19 +10,23 @@ import { ProductsComponent } from './Pages/products/products.component';
 import { RecommendationComponent } from './Pages/recommendation/recommendation.component';
 import { UsComponent } from './Pages/us/us.component';
 import { ProfileComponent } from './Pages/profile/profile.component';
+import { AdminComponent } from './Pages/admin/admin.component';
+import { authGuard } from './Guards/auth.guard';
+import { adminGuard } from './Guards/admin.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'cart', component: CartComponent },
+  { path: 'cart', component: CartComponent, canActivate: [authGuard] },
   { path: 'contact', component: ContactComponent },
-  { path: 'product', component: ProductComponent },
+  { path: 'product/:id', component: ProductComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'recommendation', component: RecommendationComponent },
   { path: 'us', component: UsComponent },
-  { path: 'profile', component: ProfileComponent }
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [authGuard, adminGuard] }
 ];
 
 @NgModule({

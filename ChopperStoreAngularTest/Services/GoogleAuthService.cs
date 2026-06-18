@@ -1,5 +1,4 @@
-﻿using Google.Apis.Auth;
-using System.Threading.Tasks;
+using Google.Apis.Auth;
 
 namespace ChopperStoreAngularTest.Services
 {
@@ -10,17 +9,27 @@ namespace ChopperStoreAngularTest.Services
 
     public class GoogleAuthService : IGoogleAuthService
     {
+        private readonly IConfiguration _configuration;
+
+        public GoogleAuthService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleTokenAsync(string token)
         {
             try
             {
-                // Verifica el token con Google
-                var validPayload = await GoogleJsonWebSignature.ValidateAsync(token);
-                return validPayload;
+                var settings = new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { _configuration["GoogleAuth:ClientId"]! }
+                };
+
+                return await GoogleJsonWebSignature.ValidateAsync(token, settings);
             }
             catch (InvalidJwtException)
             {
-                return null; // Si el token no es válido
+                return null;
             }
         }
     }

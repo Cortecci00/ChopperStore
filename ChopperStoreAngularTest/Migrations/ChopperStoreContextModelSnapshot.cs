@@ -39,6 +39,38 @@ namespace ChopperStoreAngularTest.Migrations
                     b.ToTable("categories");
                 });
 
+            modelBuilder.Entity("ChopperStoreAngularTest.Models.ContactMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("lastname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("contactMessages");
+                });
+
             modelBuilder.Entity("ChopperStoreAngularTest.Models.Item", b =>
                 {
                     b.Property<int>("Id")
@@ -47,20 +79,20 @@ namespace ChopperStoreAngularTest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ShoppingCartId")
+                    b.Property<int>("ShoppingCartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SkinId")
                         .HasColumnType("int");
 
                     b.Property<int>("quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("skinId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ShoppingCartId");
 
-                    b.HasIndex("skinId");
+                    b.HasIndex("SkinId");
 
                     b.ToTable("items");
                 });
@@ -95,12 +127,13 @@ namespace ChopperStoreAngularTest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("userId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("shoppingcarts");
                 });
@@ -112,6 +145,9 @@ namespace ChopperStoreAngularTest.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("categoryId")
                         .HasColumnType("int");
@@ -148,7 +184,7 @@ namespace ChopperStoreAngularTest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("itemsId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<double>("totalPrice")
@@ -157,16 +193,40 @@ namespace ChopperStoreAngularTest.Migrations
                     b.Property<DateTime>("transactionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("userId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("transactions");
+                });
+
+            modelBuilder.Entity("ChopperStoreAngularTest.Models.TransactionItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("SkinId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int");
+
+                    b.Property<double>("unitPriceAtPurchase")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("itemsId");
+                    b.HasIndex("SkinId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("TransactionId");
 
-                    b.ToTable("transactions");
+                    b.ToTable("transactionItems");
                 });
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.User", b =>
@@ -178,11 +238,12 @@ namespace ChopperStoreAngularTest.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("GoogleId")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isAdmin")
@@ -192,23 +253,18 @@ namespace ChopperStoreAngularTest.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("lastname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("phone")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -220,12 +276,14 @@ namespace ChopperStoreAngularTest.Migrations
                 {
                     b.HasOne("ChopperStoreAngularTest.Models.ShoppingCart", null)
                         .WithMany("items")
-                        .HasForeignKey("ShoppingCartId");
+                        .HasForeignKey("ShoppingCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ChopperStoreAngularTest.Models.Skin", "skin")
                         .WithMany()
-                        .HasForeignKey("skinId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("SkinId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("skin");
@@ -246,7 +304,7 @@ namespace ChopperStoreAngularTest.Migrations
                 {
                     b.HasOne("ChopperStoreAngularTest.Models.User", "user")
                         .WithMany()
-                        .HasForeignKey("userId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -258,7 +316,7 @@ namespace ChopperStoreAngularTest.Migrations
                     b.HasOne("ChopperStoreAngularTest.Models.Category", "category")
                         .WithMany()
                         .HasForeignKey("categoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("category");
@@ -266,24 +324,40 @@ namespace ChopperStoreAngularTest.Migrations
 
             modelBuilder.Entity("ChopperStoreAngularTest.Models.Transaction", b =>
                 {
-                    b.HasOne("ChopperStoreAngularTest.Models.Item", "items")
-                        .WithMany()
-                        .HasForeignKey("itemsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ChopperStoreAngularTest.Models.User", "user")
                         .WithMany()
-                        .HasForeignKey("userId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("items");
 
                     b.Navigation("user");
                 });
 
+            modelBuilder.Entity("ChopperStoreAngularTest.Models.TransactionItem", b =>
+                {
+                    b.HasOne("ChopperStoreAngularTest.Models.Skin", "skin")
+                        .WithMany()
+                        .HasForeignKey("SkinId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChopperStoreAngularTest.Models.Transaction", "transaction")
+                        .WithMany("items")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("skin");
+
+                    b.Navigation("transaction");
+                });
+
             modelBuilder.Entity("ChopperStoreAngularTest.Models.ShoppingCart", b =>
+                {
+                    b.Navigation("items");
+                });
+
+            modelBuilder.Entity("ChopperStoreAngularTest.Models.Transaction", b =>
                 {
                     b.Navigation("items");
                 });

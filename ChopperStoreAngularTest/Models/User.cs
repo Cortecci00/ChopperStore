@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ChopperStoreAngularTest.Models
 {
@@ -12,9 +13,11 @@ namespace ChopperStoreAngularTest.Models
         public string? email { get; set; }
         public string? phone { get; set; }
         public string? username { get; set; }
+        [JsonIgnore]
         public string? password { get; set; }
         public bool isAdmin { get; set; }
         public bool isBlocked { get; set; }
+        public string? PhotoUrl { get; set; }
 
     }
 

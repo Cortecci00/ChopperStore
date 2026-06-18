@@ -1,100 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using Google.Apis.Auth;
+using ChopperStoreAngularTest.Models.Dtos;
 using ChopperStoreAngularTest.Services;
 
 namespace ChopperStoreAngularTest.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
         private readonly ChopperStoreContext _context;
         private readonly IGoogleAuthService _googleAuthService;
         private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
-        public UsersController(ChopperStoreContext context, IUserService userService, IGoogleAuthService googleAuthService)
+        public UsersController(ChopperStoreContext context, IUserService userService, IGoogleAuthService googleAuthService, IAuthService authService)
         {
             _context = context;
             _userService = userService;
             _googleAuthService = googleAuthService;
+            _authService = authService;
         }
 
+        [AllowAnonymous]
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto request)
         {
-            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            if (string.IsNullOrEmpty(request?.Token))
             {
-                Audience = new List<string>() { "864300664450-helt864neq6oqb3hcs8b6iso32rcm2fg.apps.googleusercontent.com" }
-            };
+                return BadRequest("No se recibió token");
+            }
 
-            // Validamos el token
-            var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token, settings);
+            var payload = await _googleAuthService.VerifyGoogleTokenAsync(request.Token);
+            if (payload == null)
+            {
+                return Unauthorized("Token de Google inválido");
+            }
 
-            Console.WriteLine("VALOR:" + payload);
-
-            // Verificamos si ya existe el usuario
-            var existingUser = await _userService.GetUserByEmailAsync(payload.Email);
-
-            Console.WriteLine("VALOR:" + existingUser);
+            var existingUser = await _userService.GetUserByGoogleIdAsync(payload.Subject)
+                                ?? await _userService.GetUserByEmailAsync(payload.Email);
 
             if (existingUser == null)
             {
-                // Construimos el nuevo usuario con los datos mínimos requeridos
                 var newUser = new User
                 {
                     GoogleId = payload.Subject,
                     email = payload.Email,
-                    username = payload.Email, // Podés usar el email como username inicial
+                    username = payload.Email,
                     name = payload.GivenName,
                     lastname = payload.FamilyName,
                     isAdmin = false,
                     isBlocked = false,
-                    password = null // Opcional: si tu modelo lo permite
+                    password = null
                 };
 
-                // Lo guardamos
-                var createdUser = await _userService.CreateUserAsync(newUser);
-
-                if (string.IsNullOrEmpty(request?.Token))
-                {
-                    Console.WriteLine("TOKEN NULO O VACÍO");
-                    return BadRequest("No se recibió token");
-                }
-
-                return Ok(createdUser);
+                existingUser = await _userService.CreateUserAsync(newUser);
             }
 
-            if (string.IsNullOrEmpty(request?.Token))
+            var token = _authService.GenerateToken(existingUser);
+
+            return Ok(new Response<AuthResponseDto>
             {
-                Console.WriteLine("TOKEN NULO O VACÍO");
-                return BadRequest("No se recibió token");
-            }
-
-            // Si ya existe, devolvemos el usuario existente
-            return Ok(existingUser);
+                IsSuccess = true,
+                Message = "Inicio de sesión con Google exitoso",
+                Result = new AuthResponseDto { User = existingUser, Token = token }
+            });
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
             var user = await _userService.GetUserByEmailAsync(request.email);
-            if (user == null || user.password != request.password)
+            if (user == null || string.IsNullOrEmpty(user.password) || !BCrypt.Net.BCrypt.Verify(request.password, user.password))
             {
                 return Unauthorized("Email o contraseña incorrectos");
             }
-            return Ok(user);
+
+            var token = _authService.GenerateToken(user);
+
+            return Ok(new Response<AuthResponseDto>
+            {
+                IsSuccess = true,
+                Message = "Inicio de sesión exitoso",
+                Result = new AuthResponseDto { User = user, Token = token }
+            });
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateUpdate model)
         {
@@ -108,7 +104,6 @@ namespace ChopperStoreAngularTest.Controllers
                 });
             }
 
-            // Verificar si ya existe usuario
             var existeUsuario = await _context.users.AnyAsync(u => u.email == model.email);
             if (existeUsuario)
             {
@@ -124,7 +119,7 @@ namespace ChopperStoreAngularTest.Controllers
             {
                 email = model.email,
                 username = model.username,
-                password = model.password, 
+                password = BCrypt.Net.BCrypt.HashPassword(model.password),
                 isAdmin = false,
                 isBlocked = false
             };
@@ -132,14 +127,17 @@ namespace ChopperStoreAngularTest.Controllers
             await _context.users.AddAsync(nuevoUsuario);
             await _context.SaveChangesAsync();
 
-            return Ok(new Response<User>
+            var token = _authService.GenerateToken(nuevoUsuario);
+
+            return Ok(new Response<AuthResponseDto>
             {
                 IsSuccess = true,
                 Message = "Usuario registrado correctamente",
-                Result = nuevoUsuario
+                Result = new AuthResponseDto { User = nuevoUsuario, Token = token }
             });
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
@@ -148,7 +146,7 @@ namespace ChopperStoreAngularTest.Controllers
             {
                 return Ok(new Response<IEnumerable<User>>
                 {
-                    IsSuccess = false,
+                    IsSuccess = true,
                     Result = usuarios,
                     Message = "Listado de usuarios"
                 });
@@ -156,11 +154,13 @@ namespace ChopperStoreAngularTest.Controllers
 
             return Ok(new Response<IEnumerable<User>>
             {
-                IsSuccess = false,
+                IsSuccess = true,
                 Message = "No hay registros para mostrar",
                 Result = []
             });
         }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUpdate model)
         {
@@ -174,24 +174,38 @@ namespace ChopperStoreAngularTest.Controllers
                 });
             }
 
+            var existeUsuario = await _context.users.AnyAsync(u => u.email == model.email);
+            if (existeUsuario)
+            {
+                return BadRequest(new Response<CreateUpdate>
+                {
+                    IsSuccess = false,
+                    Message = "El email ya está registrado",
+                    Result = model
+                });
+            }
+
             var usuarioNuevo = new User
             {
                 email = model.email,
                 username = model.username,
-                password = model.password
+                password = BCrypt.Net.BCrypt.HashPassword(model.password)
             };
 
             await _context.users.AddAsync(usuarioNuevo);
             await _context.SaveChangesAsync();
 
-            return Ok(new Response<User>
+            var token = _authService.GenerateToken(usuarioNuevo);
+
+            return Ok(new Response<AuthResponseDto>
             {
                 IsSuccess = true,
-                Result = usuarioNuevo,
+                Result = new AuthResponseDto { User = usuarioNuevo, Token = token },
                 Message = "Usuario creado correctamente"
             });
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -223,6 +237,7 @@ namespace ChopperStoreAngularTest.Controllers
             });
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -235,6 +250,12 @@ namespace ChopperStoreAngularTest.Controllers
                     Result = null
                 });
             }
+
+            if (!EsPropietarioOAdmin(id))
+            {
+                return Forbid();
+            }
+
             var usuario = await GetUsers(id);
             if (usuario != null)
             {
@@ -256,61 +277,128 @@ namespace ChopperStoreAngularTest.Controllers
             });
         }
 
+        [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] CreateUpdate model)
-        { 
-            if (id <= 0) 
-            { 
-                return BadRequest(new Response<CreateUpdate> 
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateProfileDto model)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new Response<User>
                 {
                     IsSuccess = false,
                     Message = "El id es necesario",
-                    Result = model
+                    Result = null
                 });
             }
-            if (ModelState.IsValid) 
+
+            if (!EsPropietarioOAdmin(id))
             {
-                var usuario = await GetUsers(id);
-                if (usuario == null)
+                return Forbid();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<User>
                 {
-                    return NotFound(new Response<CreateUpdate>
+                    IsSuccess = false,
+                    Message = "No se puede actualizar",
+                    Result = null
+                });
+            }
+
+            var usuario = await GetUsers(id);
+            if (usuario == null)
+            {
+                return NotFound(new Response<User>
+                {
+                    IsSuccess = false,
+                    Message = $"No se encontró un usuario con el id {id}",
+                    Result = null
+                });
+            }
+
+            if (model.email != null && model.email != usuario.email)
+            {
+                var emailEnUso = await _context.users.AnyAsync(u => u.email == model.email && u.Id != id);
+                if (emailEnUso)
+                {
+                    return BadRequest(new Response<User>
                     {
                         IsSuccess = false,
-                        Message = $"No se encontró un usuario con el id {id}",
-                        Result = model
+                        Message = "El email ya está registrado por otro usuario",
+                        Result = null
                     });
                 }
-
                 usuario.email = model.email;
-                usuario.username = model.username;
-                usuario.password = model.password;
-
-                _context.users.Update(usuario);
-                await _context.SaveChangesAsync();
-                
-                return Ok(new Response<CreateUpdate>
-                {
-                    IsSuccess = true,
-                    Message = "Usuario actualizado",
-                    Result= model
-                });
             }
-            return BadRequest(new Response<CreateUpdate>
-            { 
-                IsSuccess= false,
-                Message= "No se puede actualizar",
-                Result= model
-            });
 
+            if (model.name != null) usuario.name = model.name;
+            if (model.lastname != null) usuario.lastname = model.lastname;
+            if (model.username != null) usuario.username = model.username;
+            if (model.phone != null) usuario.phone = model.phone;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<User>
+            {
+                IsSuccess = true,
+                Message = "Usuario actualizado",
+                Result = usuario
+            });
         }
 
-        private async Task<User> GetUsers(int id) 
-        { 
+        [Authorize]
+        [HttpPut("{id}/photo")]
+        public async Task<IActionResult> PutPhoto(int id, [FromBody] UpdatePhotoDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<User>
+                {
+                    IsSuccess = false,
+                    Message = "La foto es obligatoria",
+                    Result = null
+                });
+            }
+
+            if (!EsPropietarioOAdmin(id))
+            {
+                return Forbid();
+            }
+
+            var usuario = await GetUsers(id);
+            if (usuario == null)
+            {
+                return NotFound(new Response<User>
+                {
+                    IsSuccess = false,
+                    Message = $"No se encontró un usuario con el id {id}",
+                    Result = null
+                });
+            }
+
+            usuario.PhotoUrl = model.PhotoUrl;
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<User>
+            {
+                IsSuccess = true,
+                Message = "Foto actualizada",
+                Result = usuario
+            });
+        }
+
+        private bool EsPropietarioOAdmin(int id)
+        {
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isAdminClaim = User.FindFirstValue("isAdmin");
+            return isAdminClaim == "true" || idClaim == id.ToString();
+        }
+
+        private async Task<User> GetUsers(int id)
+        {
             var usuario = await _context.users.FirstOrDefaultAsync(x => x.Id == id);
             return usuario;
         }
-
-
-
     }
 }

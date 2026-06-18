@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UsersService } from '../../Services/users.service';
+import { AuthServiceTsService } from '../../Services/auth.service.ts.service';
 import { CrearActualizar, User } from '../../Interfaces';
 
 @Component({
@@ -26,7 +27,7 @@ export class RegisterComponent {
   private crearUser?: CrearActualizar;
   private user?: User;
 
-  constructor(private _fb: FormBuilder, private _usersService: UsersService, private _route: Router, private _snackBar: MatSnackBar) {
+  constructor(private _fb: FormBuilder, private _usersService: UsersService, private _authService: AuthServiceTsService, private _route: Router, private _snackBar: MatSnackBar) {
     this.formUser = this._fb.group(
       {
         email: ['', [Validators.required, Validators.email]], // Solo validación de email
@@ -91,6 +92,8 @@ export class RegisterComponent {
       this._usersService.postUser(crearUser).subscribe(
         (resp) => {
           if (resp.isSuccess) {
+            this._authService.setToken(resp.result.token);
+            localStorage.setItem('user', JSON.stringify(resp.result.user));
             this._showSuccess(resp.message);
             this.formUser.reset();
             this._route.navigate(['/home']);

@@ -1,17 +1,14 @@
-﻿/*using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
+using ChopperStoreAngularTest.Models.Dtos;
 
 namespace ChopperStoreAngularTest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : Controller
+    public class CategoriesController : ControllerBase
     {
         private readonly ChopperStoreContext _context;
 
@@ -20,140 +17,139 @@ namespace ChopperStoreAngularTest.Controllers
             _context = context;
         }
 
-        // GET: Categories
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            return View(await _context.categories.ToListAsync());
+            var categorias = await _context.categories.ToListAsync();
+            return Ok(new Response<IEnumerable<Category>>
+            {
+                IsSuccess = true,
+                Message = "Listado de categorías",
+                Result = categorias
+            });
         }
 
-        // GET: Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            if (id == null)
+            var categoria = await _context.categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (categoria == null)
             {
-                return NotFound();
-            }
-
-            var category = await _context.categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
-        }
-
-        // GET: Categories/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,name")] Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
-        }
-
-        // GET: Categories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return View(category);
-        }
-
-        // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,name")] Category category)
-        {
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                return NotFound(new Response<Category>
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+                    IsSuccess = false,
+                    Message = "No se encontró la categoría",
+                    Result = null
+                });
+            }
+
+            return Ok(new Response<Category>
+            {
+                IsSuccess = true,
+                Message = "Se encontró la categoría",
+                Result = categoria
+            });
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CategoryCreateUpdateDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<CategoryCreateUpdateDto>
                 {
-                    if (!CategoryExists(category.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
-        }
-
-        // GET: Categories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+                    IsSuccess = false,
+                    Message = "Datos inválidos",
+                    Result = model
+                });
             }
 
-            var category = await _context.categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
-        }
-
-        // POST: Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var category = await _context.categories.FindAsync(id);
-            if (category != null)
-            {
-                _context.categories.Remove(category);
-            }
-
+            var categoria = new Category { name = model.name };
+            await _context.categories.AddAsync(categoria);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Ok(new Response<Category>
+            {
+                IsSuccess = true,
+                Message = "Categoría creada correctamente",
+                Result = categoria
+            });
         }
 
-        private bool CategoryExists(int id)
+        [Authorize(Policy = "AdminOnly")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CategoryCreateUpdateDto model)
         {
-            return _context.categories.Any(e => e.Id == id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<CategoryCreateUpdateDto>
+                {
+                    IsSuccess = false,
+                    Message = "Datos inválidos",
+                    Result = model
+                });
+            }
+
+            var categoria = await _context.categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (categoria == null)
+            {
+                return NotFound(new Response<CategoryCreateUpdateDto>
+                {
+                    IsSuccess = false,
+                    Message = $"No se encontró una categoría con el id {id}",
+                    Result = model
+                });
+            }
+
+            categoria.name = model.name;
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<Category>
+            {
+                IsSuccess = true,
+                Message = "Categoría actualizada",
+                Result = categoria
+            });
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var categoria = await _context.categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (categoria == null)
+            {
+                return NotFound(new Response<Category>
+                {
+                    IsSuccess = false,
+                    Message = "No se encontró la categoría",
+                    Result = null
+                });
+            }
+
+            var tieneSkins = await _context.skins.AnyAsync(s => s.category.Id == id);
+            if (tieneSkins)
+            {
+                return BadRequest(new Response<Category>
+                {
+                    IsSuccess = false,
+                    Message = "No se puede eliminar la categoría porque tiene skins asociadas",
+                    Result = categoria
+                });
+            }
+
+            _context.categories.Remove(categoria);
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<Category>
+            {
+                IsSuccess = true,
+                Message = "Categoría eliminada",
+                Result = categoria
+            });
         }
     }
 }
-*/

@@ -4,6 +4,22 @@
     <img width="120" height="120" src="/chopper-logotransparente.png" />
     <span class="example-spacer"></span>
 
+    <a class="html" routerLink="/products" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+      Tienda
+    </a>
+    <a class="html" routerLink="/cart" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+      Carrito
+    </a>
+    <a class="html" routerLink="/recommendation" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+      Recomendaciones
+    </a>
+    <a class="html" routerLink="/contact" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+      Contacto
+    </a>
+    <a *ngIf="isAdmin" class="html" routerLink="/admin" style="font-family: Calibri; color: white; margin-right: 1.5em;">
+      Admin
+    </a>
+
     <a *ngIf="!usuarioLogueado; else perfil"
        class="html" routerLink="/login"
        style="font-family: Calibri; color: white;">
@@ -12,10 +28,13 @@
 
     <ng-template #perfil>
       <a class="html" routerLink="/profile"
-         style="font-family: Calibri; color: white;">
+         style="font-family: Calibri; color: white; margin-right: 1.5em;">
         Mi Perfil
       </a>
-
+      <a class="html" (click)="logout()"
+         style="font-family: Calibri; color: white; cursor: pointer;">
+        Cerrar sesión
+      </a>
     </ng-template>
     <span class="spacer1"></span>
   </mat-toolbar>
@@ -48,18 +67,9 @@
 
     <div style="font-size:70%">
       <p style="color:white">Accesos</p>
-      <p style="color:#454545">Mi cuenta</p>
-      <p style="color:#454545">Carrito</p>
-      <p style="color:#454545">Contacto</p>
-    </div>
-
-    <span class="spacer3"></span>
-
-    <div style="font-size:70%">
-      <p style="color:white">Skins</p>
-      <p style="color:#454545">Rifles</p>
-      <p style="color:#454545">Cuchillos</p>
-      <p style="color:#454545">Guantes</p>
+      <p style="color:#454545"><a routerLink="/profile" style="color:#454545">Mi cuenta</a></p>
+      <p style="color:#454545"><a routerLink="/cart" style="color:#454545">Carrito</a></p>
+      <p style="color:#454545"><a routerLink="/contact" style="color:#454545">Contacto</a></p>
     </div>
 
     <span class="spacer1"></span>

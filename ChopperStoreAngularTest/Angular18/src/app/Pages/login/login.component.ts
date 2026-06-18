@@ -5,6 +5,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UsersService } from '../../Services/users.service';
+import { AuthServiceTsService } from '../../Services/auth.service.ts.service';
 
 declare const google: any;
 
@@ -29,6 +30,7 @@ export class LoginComponent {
 
   constructor(
     private _usersService: UsersService,
+    private _authService: AuthServiceTsService,
     private _router: Router,
     private _snackBar: MatSnackBar
   ) {
@@ -64,7 +66,8 @@ export class LoginComponent {
     }).subscribe({
       next: (resp) => {
         if (resp.isSuccess) {
-          localStorage.setItem('user', JSON.stringify(resp.result));
+          localStorage.setItem('user', JSON.stringify(resp.result.user));
+          this._authService.setToken(resp.result.token);
           this._router.navigate(['/home']);
         }
       },
@@ -83,7 +86,8 @@ export class LoginComponent {
       this._usersService.loginWithGoogle(googleToken).subscribe({
         next: (resp) => {
           if (resp.isSuccess) {
-            localStorage.setItem('user', JSON.stringify(resp.result));
+            localStorage.setItem('user', JSON.stringify(resp.result.user));
+            this._authService.setToken(resp.result.token);
             this._router.navigate(['/home']);
           }
         },
