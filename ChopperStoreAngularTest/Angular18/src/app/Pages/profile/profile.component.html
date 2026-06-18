@@ -74,6 +74,15 @@
         <td style="color:black" mat-cell *matCellDef="let element"> ${{element.totalPrice}} </td>
       </ng-container>
 
+      <ng-container matColumnDef="status">
+        <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef> Estado </th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngIf="element.paymentStatus === 'approved'" style="color:#2e7d32; font-weight:600">Pagado</span>
+          <span *ngIf="element.paymentStatus === 'pending'" style="color:#b8860b; font-weight:600">Pendiente</span>
+          <span *ngIf="element.paymentStatus === 'rejected'" style="color:#c62828; font-weight:600">Rechazado</span>
+        </td>
+      </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>

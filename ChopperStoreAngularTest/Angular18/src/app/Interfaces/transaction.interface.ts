@@ -16,4 +16,10 @@ export interface Transaction {
   items: TransactionItem[];
   totalPrice: number;
   transactionDate: string;
+  paymentStatus: 'pending' | 'approved' | 'rejected';
+}
+
+export interface CheckoutResult {
+  transactionId: number;
+  checkoutUrl: string;
 }

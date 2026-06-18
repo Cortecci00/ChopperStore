@@ -36,6 +36,7 @@ import { RecommendationComponent } from './Pages/recommendation/recommendation.c
 import { RecommendationDialogComponent } from './Pages/recommendation/recommendation-dialog/recommendation-dialog.component';
 import { ProfileComponent } from './Pages/profile/profile.component';
 import { AdminComponent } from './Pages/admin/admin.component';
+import { CheckoutDialogComponent } from './Pages/cart/checkout-dialog/checkout-dialog.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { AdminComponent } from './Pages/admin/admin.component';
     RecommendationDialogComponent,
     ProfileComponent,
     AdminComponent,
+    CheckoutDialogComponent,
   ],
   imports: [
     MatPaginatorModule,

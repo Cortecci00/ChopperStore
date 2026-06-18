@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>ba3fbd75-a6a6-4b6f-b0e3-1dba00dcfcba</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
+    <PackageReference Include="mercadopago-sdk" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">

@@ -3,9 +3,11 @@ import { Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Item, ShoppingCart } from '../../Interfaces';
 import { ShoppingCartService } from '../../Services/shopping-cart.service';
 import { TransactionService } from '../../Services/transaction.service';
+import { CheckoutDialogComponent } from './checkout-dialog/checkout-dialog.component';
 
 @Component({
   selector: 'app-cart',
@@ -25,7 +27,8 @@ export class CartComponent implements OnInit, AfterViewInit {
     private _cartService: ShoppingCartService,
     private _transactionService: TransactionService,
     private _router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -79,15 +82,21 @@ export class CartComponent implements OnInit, AfterViewInit {
     if (!confirmado) return;
 
     this._transactionService.checkout().subscribe({
-      next: () => {
-        this._snackBar.open('Compra realizada', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-success'],
+      next: (r) => {
+        const ref = this._dialog.open(CheckoutDialogComponent, {
+          data: r.result,
+          disableClose: true,
         });
-        this._router.navigate(['/profile']);
+        ref.afterClosed().subscribe((status) => {
+          if (status === 'approved') {
+            this._router.navigate(['/profile']);
+          } else {
+            this.loadCart();
+          }
+        });
       },
       error: () =>
-        this._snackBar.open('No se pudo completar la compra', 'Cerrar', {
+        this._snackBar.open('No se pudo iniciar el pago', 'Cerrar', {
           duration: 3000,
           panelClass: ['snackbar-error'],
         }),

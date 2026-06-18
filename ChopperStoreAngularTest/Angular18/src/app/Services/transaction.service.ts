@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Response, Transaction } from '../Interfaces';
+import { CheckoutResult, Response, Transaction } from '../Interfaces';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -11,8 +11,8 @@ export class TransactionService {
   private _baseUrl = environment.apiUrl;
   private http = inject(HttpClient);
 
-  checkout(): Observable<Response<Transaction>> {
-    return this.http.post<Response<Transaction>>(`${this._baseUrl}api/Transaction/checkout`, {});
+  checkout(): Observable<Response<CheckoutResult>> {
+    return this.http.post<Response<CheckoutResult>>(`${this._baseUrl}api/Transaction/checkout`, {});
   }
 
   getMine(): Observable<Response<Transaction[]>> {

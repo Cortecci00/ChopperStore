@@ -22,7 +22,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   photoPreview: string | null = null;
   isAdmin = false;
 
-  displayedColumns: string[] = ['date', 'itemCount', 'total'];
+  displayedColumns: string[] = ['date', 'itemCount', 'total', 'status'];
   dataSource = new MatTableDataSource<Transaction>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

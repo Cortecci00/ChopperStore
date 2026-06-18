@@ -1,0 +1,28 @@
+<h2 class="semibold" style="font-family:Calibri; padding:1em 1em 0 1em">Pagar con Mercado Pago</h2>
+
+<div mat-dialog-content style="padding:0 1em; text-align:center; min-width:300px">
+  <div *ngIf="status === 'pending'">
+    <p style="color:#828282">Escaneá el código con la app de Mercado Pago, o tocá el botón para pagar desde esta pantalla.</p>
+    <img *ngIf="qrDataUrl" [src]="qrDataUrl" style="width:220px; height:220px" />
+    <div style="margin-top:1em">
+      <a [href]="data.checkoutUrl" target="_blank" style="background-color: #D9697D; color: white; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; border-radius:10px; min-height:50px; min-width:200px;">
+        Abrir Mercado Pago
+      </a>
+    </div>
+    <p style="color:#828282; margin-top:1em">Esperando confirmación del pago...</p>
+  </div>
+
+  <div *ngIf="status === 'approved'">
+    <p style="color:#2e7d32; font-weight:600; font-size:20px">¡Pago confirmado!</p>
+    <p style="color:#828282">Tu compra ya figura en el historial de tu perfil.</p>
+  </div>
+
+  <div *ngIf="status === 'rejected'">
+    <p style="color:#c62828; font-weight:600; font-size:20px">El pago no se pudo completar</p>
+    <p style="color:#828282">Podés intentar de nuevo desde el carrito.</p>
+  </div>
+</div>
+
+<div mat-dialog-actions style="display:flex; justify-content:flex-end; padding:0 1em 1em 1em">
+  <button class="btn" mat-flat-button (click)="close()">Cerrar</button>
+</div>

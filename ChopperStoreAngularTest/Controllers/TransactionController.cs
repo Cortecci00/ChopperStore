@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
+using ChopperStoreAngularTest.Models.Dtos;
+using ChopperStoreAngularTest.Services;
 
 namespace ChopperStoreAngularTest.Controllers
 {
@@ -12,10 +14,12 @@ namespace ChopperStoreAngularTest.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly ChopperStoreContext _context;
+        private readonly IMercadoPagoService _mercadoPagoService;
 
-        public TransactionController(ChopperStoreContext context)
+        public TransactionController(ChopperStoreContext context, IMercadoPagoService mercadoPagoService)
         {
             _context = context;
+            _mercadoPagoService = mercadoPagoService;
         }
 
         private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -50,19 +54,91 @@ namespace ChopperStoreAngularTest.Controllers
                 UserId = CurrentUserId,
                 items = transactionItems,
                 totalPrice = transactionItems.Sum(ti => ti.unitPriceAtPurchase * ti.quantity),
-                transactionDate = DateTime.UtcNow
+                transactionDate = DateTime.UtcNow,
+                PaymentStatus = "pending"
             };
 
             await _context.transactions.AddAsync(transaction);
+            await _context.SaveChangesAsync();
+
+            string checkoutUrl;
+            try
+            {
+                var (preferenceId, initPoint) = await _mercadoPagoService.CreatePreferenceAsync(transaction, cart.items);
+                transaction.MercadoPagoPreferenceId = preferenceId;
+                checkoutUrl = initPoint;
+            }
+            catch (Exception)
+            {
+                _context.transactions.Remove(transaction);
+                await _context.SaveChangesAsync();
+
+                return StatusCode(502, new Response<CheckoutResultDto>
+                {
+                    IsSuccess = false,
+                    Message = "No se pudo iniciar el pago con Mercado Pago. Intentá de nuevo en unos minutos.",
+                    Result = null
+                });
+            }
+
             _context.items.RemoveRange(cart.items);
             await _context.SaveChangesAsync();
 
-            return Ok(new Response<Transaction>
+            return Ok(new Response<CheckoutResultDto>
             {
                 IsSuccess = true,
-                Message = "Compra realizada correctamente",
-                Result = transaction
+                Message = "Compra creada, falta confirmar el pago",
+                Result = new CheckoutResultDto
+                {
+                    TransactionId = transaction.Id,
+                    CheckoutUrl = checkoutUrl
+                }
             });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("webhook/mercadopago")]
+        public async Task<IActionResult> MercadoPagoWebhook([FromQuery] string? topic, [FromQuery] string? id, [FromBody] MercadoPagoWebhookDto? body)
+        {
+            var paymentIdRaw = body?.Data?.Id ?? (string.Equals(topic, "payment", StringComparison.OrdinalIgnoreCase) ? id : null);
+
+            if (string.IsNullOrEmpty(paymentIdRaw) || !long.TryParse(paymentIdRaw, out var paymentId))
+            {
+                return Ok();
+            }
+
+            MercadoPago.Resource.Payment.Payment payment;
+            try
+            {
+                payment = await _mercadoPagoService.GetPaymentAsync(paymentId);
+            }
+            catch (Exception)
+            {
+                return Ok();
+            }
+
+            if (payment?.ExternalReference == null || !int.TryParse(payment.ExternalReference, out var transactionId))
+            {
+                return Ok();
+            }
+
+            var transaction = await _context.transactions.FirstOrDefaultAsync(t => t.Id == transactionId);
+            if (transaction == null)
+            {
+                return Ok();
+            }
+
+            transaction.MercadoPagoPaymentId = paymentId.ToString();
+            transaction.PaymentStatus = payment.Status switch
+            {
+                "approved" => "approved",
+                "rejected" or "cancelled" => "rejected",
+                _ => "pending"
+            };
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpGet("mine")]
