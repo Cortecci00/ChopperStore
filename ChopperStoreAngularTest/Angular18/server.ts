@@ -23,6 +23,7 @@ export function app(): express.Express {
   server.get('**', express.static(browserDistFolder, {
     maxAge: '1y',
     index: 'index.html',
+    dotfiles: 'allow',
   }));
 
   // All regular routes use the Angular engine

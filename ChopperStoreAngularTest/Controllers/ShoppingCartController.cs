@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChopperStoreAngularTest.Models;
 using ChopperStoreAngularTest.Models.Dtos;
+using ChopperStoreAngularTest.Services;
 
 namespace ChopperStoreAngularTest.Controllers
 {
@@ -13,10 +14,12 @@ namespace ChopperStoreAngularTest.Controllers
     public class ShoppingCartController : ControllerBase
     {
         private readonly ChopperStoreContext _context;
+        private readonly ISkinStockService _skinStockService;
 
-        public ShoppingCartController(ChopperStoreContext context)
+        public ShoppingCartController(ChopperStoreContext context, ISkinStockService skinStockService)
         {
             _context = context;
+            _skinStockService = skinStockService;
         }
 
         private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -74,8 +77,7 @@ namespace ChopperStoreAngularTest.Controllers
                 });
             }
 
-            var yaReservada = await _context.transactionItems.AnyAsync(ti =>
-                ti.SkinId == model.SkinId && ti.transaction.PaymentStatus == "pending");
+            var yaReservada = await _skinStockService.AreAnyReservedAsync(new[] { model.SkinId });
             if (yaReservada)
             {
                 return BadRequest(new Response<AddCartItemDto>

@@ -11,8 +11,6 @@ namespace ChopperStoreAngularTest.Controllers
     [ApiController]
     public class SkinsController : ControllerBase
     {
-        private static readonly TimeSpan ReservationWindow = TimeSpan.FromMinutes(30);
-
         private readonly ChopperStoreContext _context;
         private readonly ISkinStockService _skinStockService;
 
@@ -20,17 +18,6 @@ namespace ChopperStoreAngularTest.Controllers
         {
             _context = context;
             _skinStockService = skinStockService;
-        }
-
-        private async Task<List<int>> GetReservedSkinIdsAsync()
-        {
-            var cutoff = DateTime.UtcNow - ReservationWindow;
-            return await _context.transactionItems
-                .Where(ti => ti.SkinId != null
-                    && ti.transaction.PaymentStatus == "pending"
-                    && ti.transaction.transactionDate > cutoff)
-                .Select(ti => ti.SkinId!.Value)
-                .ToListAsync();
         }
 
         [AllowAnonymous]
@@ -41,7 +28,7 @@ namespace ChopperStoreAngularTest.Controllers
 
             if (storefrontOnly)
             {
-                var reservedSkinIds = await GetReservedSkinIdsAsync();
+                var reservedSkinIds = await _skinStockService.GetReservedSkinIdsAsync();
                 query = query.Where(s => !reservedSkinIds.Contains(s.Id));
             }
 
@@ -86,7 +73,7 @@ namespace ChopperStoreAngularTest.Controllers
 
             if (storefrontOnly)
             {
-                var reservedSkinIds = await GetReservedSkinIdsAsync();
+                var reservedSkinIds = await _skinStockService.GetReservedSkinIdsAsync();
                 query = query.Where(s => !reservedSkinIds.Contains(s.Id));
             }
 

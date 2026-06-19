@@ -1,11 +1,11 @@
 <div style="margin-top:4em; margin-bottom:4em" class="container">
   <div class="flex-c" style="margin-top:4em; align-items:center">
-    <div style="display:flex; flex-direction:column">
+    <div class="products-title-block" style="display:flex; flex-direction:column">
       <p class="semibold" style="font-size:64px">Tienda</p>
       <p style="color: #828282; font-size: 24px">Encontrá las mejores skins acá</p>
     </div>
     <span style="flex:1"></span>
-    <mat-form-field appearance="outline" style="min-width:220px">
+    <mat-form-field appearance="outline" class="products-filter" style="min-width:220px">
       <mat-label style="color: #828282">Categoría</mat-label>
       <mat-select [value]="selectedCategoryId" (selectionChange)="onCategoryChange($event.value)">
         <mat-option [value]="null">Todas</mat-option>

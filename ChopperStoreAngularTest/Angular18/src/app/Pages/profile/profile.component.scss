@@ -46,6 +46,10 @@ html {
   .flex-container {
     flex-direction: column;
   }
+
+  .flex-item-left {
+    margin-bottom: 2em;
+  }
 }
 
 .company {
@@ -102,6 +106,8 @@ table {
 mat-paginator {
   background-color: white;
   color: black;
+  margin-top: 1em;
+  display: block;
 }
 
 ::ng-deep .mat-mdc-paginator-navigation-previous .mat-mdc-paginator-icon,

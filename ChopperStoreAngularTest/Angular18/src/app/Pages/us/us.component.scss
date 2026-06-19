@@ -39,6 +39,12 @@
   .flex-container {
     flex-direction: column;
   }
+
+  .flex-item-right {
+    margin-left: 5%;
+    margin-right: 5%;
+    text-align: center;
+  }
 }
 
 img {

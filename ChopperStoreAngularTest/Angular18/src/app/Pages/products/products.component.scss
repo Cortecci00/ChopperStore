@@ -41,6 +41,28 @@
 .flex-c {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+@media (max-width: 600px) {
+  .flex-c {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .flex-c span {
+    display: none;
+  }
+
+  .products-title-block {
+    align-items: center;
+  }
+
+  .products-filter {
+    width: 100%;
+    max-width: 320px;
+  }
 }
 
 .rgrid {

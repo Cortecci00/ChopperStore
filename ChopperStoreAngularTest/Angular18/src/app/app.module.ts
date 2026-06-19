@@ -41,6 +41,7 @@ import { AdminComponent } from './Pages/admin/admin.component';
 import { CheckoutDialogComponent } from './Pages/cart/checkout-dialog/checkout-dialog.component';
 import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
+import { PaymentReturnComponent } from './Pages/payment-return/payment-return.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { ResetPasswordComponent } from './Pages/reset-password/reset-password.co
     CheckoutDialogComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
+    PaymentReturnComponent,
   ],
   imports: [
     MatPaginatorModule,

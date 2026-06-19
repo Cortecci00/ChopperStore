@@ -136,4 +136,11 @@ html {
   .flex-container {
     flex-direction: column;
   }
+
+  .flex-item-left,
+  .flex-item-right {
+    margin-left: 5% !important;
+    margin-right: 5% !important;
+    text-align: center;
+  }
 }

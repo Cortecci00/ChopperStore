@@ -40,10 +40,11 @@ namespace ChopperStoreAngularTest.Services
                 NotificationUrl = $"{backendUrl}/api/Transaction/webhook/mercadopago",
                 BackUrls = new PreferenceBackUrlsRequest
                 {
-                    Success = $"{frontendUrl}/profile",
-                    Pending = $"{frontendUrl}/profile",
-                    Failure = $"{frontendUrl}/cart"
-                }
+                    Success = $"{frontendUrl}/payment-return?status=success",
+                    Pending = $"{frontendUrl}/payment-return?status=pending",
+                    Failure = $"{frontendUrl}/payment-return?status=failure"
+                },
+                AutoReturn = "approved"
             };
 
             var client = new PreferenceClient();

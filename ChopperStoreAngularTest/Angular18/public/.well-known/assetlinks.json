@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.chopperstore.app",
+      "sha256_cert_fingerprints": [
+        "5E:B0:7E:A7:35:C9:A7:73:A1:05:BB:B9:B9:31:D1:02:57:7D:E7:60:03:E2:5C:D1:5A:54:31:AC:27:D8:B6:D5"
+      ]
+    }
+  }
+]

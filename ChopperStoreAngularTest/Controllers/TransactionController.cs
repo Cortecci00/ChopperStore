@@ -45,8 +45,7 @@ namespace ChopperStoreAngularTest.Controllers
             }
 
             var skinIds = cart.items.Select(i => i.SkinId).ToList();
-            var algunaNoDisponible = await _context.transactionItems.AnyAsync(ti =>
-                ti.SkinId != null && skinIds.Contains(ti.SkinId.Value) && ti.transaction.PaymentStatus == "pending");
+            var algunaNoDisponible = await _skinStockService.AreAnyReservedAsync(skinIds);
             if (algunaNoDisponible)
             {
                 return BadRequest(new Response<string>

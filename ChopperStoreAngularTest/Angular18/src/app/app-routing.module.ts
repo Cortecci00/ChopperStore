@@ -13,6 +13,7 @@ import { ProfileComponent } from './Pages/profile/profile.component';
 import { AdminComponent } from './Pages/admin/admin.component';
 import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
+import { PaymentReturnComponent } from './Pages/payment-return/payment-return.component';
 import { authGuard } from './Guards/auth.guard';
 import { adminGuard } from './Guards/admin.guard';
 
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'payment-return', component: PaymentReturnComponent, canActivate: [authGuard] },
   { path: 'cart', component: CartComponent, canActivate: [authGuard] },
   { path: 'contact', component: ContactComponent },
   { path: 'product/:id', component: ProductComponent },
