@@ -11,6 +11,8 @@ import { RecommendationComponent } from './Pages/recommendation/recommendation.c
 import { UsComponent } from './Pages/us/us.component';
 import { ProfileComponent } from './Pages/profile/profile.component';
 import { AdminComponent } from './Pages/admin/admin.component';
+import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
 import { authGuard } from './Guards/auth.guard';
 import { adminGuard } from './Guards/admin.guard';
 
@@ -19,6 +21,8 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'cart', component: CartComponent, canActivate: [authGuard] },
   { path: 'contact', component: ContactComponent },
   { path: 'product/:id', component: ProductComponent },

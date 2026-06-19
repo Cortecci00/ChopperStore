@@ -16,13 +16,17 @@ namespace ChopperStoreAngularTest.Controllers
         private readonly IGoogleAuthService _googleAuthService;
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
 
-        public UsersController(ChopperStoreContext context, IUserService userService, IGoogleAuthService googleAuthService, IAuthService authService)
+        public UsersController(ChopperStoreContext context, IUserService userService, IGoogleAuthService googleAuthService, IAuthService authService, IEmailService emailService, IConfiguration configuration)
         {
             _context = context;
             _userService = userService;
             _googleAuthService = googleAuthService;
             _authService = authService;
+            _emailService = emailService;
+            _configuration = configuration;
         }
 
         [AllowAnonymous]
@@ -134,6 +138,78 @@ namespace ChopperStoreAngularTest.Controllers
                 IsSuccess = true,
                 Message = "Usuario registrado correctamente",
                 Result = new AuthResponseDto { User = nuevoUsuario, Token = token }
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<string>
+                {
+                    IsSuccess = false,
+                    Message = "El email no es válido",
+                    Result = null
+                });
+            }
+
+            var usuario = await _context.users.FirstOrDefaultAsync(u => u.email == model.Email);
+            if (usuario != null)
+            {
+                usuario.PasswordResetToken = Guid.NewGuid().ToString("N");
+                usuario.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+                await _context.SaveChangesAsync();
+
+                var frontendUrl = _configuration["App:FrontendUrl"];
+                var resetLink = $"{frontendUrl}/reset-password?token={usuario.PasswordResetToken}";
+                await _emailService.SendPasswordResetEmailAsync(usuario.email!, resetLink);
+            }
+
+            return Ok(new Response<string>
+            {
+                IsSuccess = true,
+                Message = "Si el email está registrado, te enviamos instrucciones para recuperar tu contraseña",
+                Result = null
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response<string>
+                {
+                    IsSuccess = false,
+                    Message = "Datos inválidos",
+                    Result = null
+                });
+            }
+
+            var usuario = await _context.users.FirstOrDefaultAsync(u => u.PasswordResetToken == model.Token);
+            if (usuario == null || usuario.PasswordResetTokenExpiry == null || usuario.PasswordResetTokenExpiry < DateTime.UtcNow)
+            {
+                return BadRequest(new Response<string>
+                {
+                    IsSuccess = false,
+                    Message = "El link es inválido o expiró, solicitá uno nuevo",
+                    Result = null
+                });
+            }
+
+            usuario.password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+            usuario.PasswordResetToken = null;
+            usuario.PasswordResetTokenExpiry = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<string>
+            {
+                IsSuccess = true,
+                Message = "Contraseña actualizada correctamente",
+                Result = null
             });
         }
 

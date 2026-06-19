@@ -19,6 +19,10 @@ namespace ChopperStoreAngularTest.Models
         public bool isBlocked { get; set; }
         public string? PhotoUrl { get; set; }
         public string? SteamTradeUrl { get; set; }
+        [JsonIgnore]
+        public string? PasswordResetToken { get; set; }
+        [JsonIgnore]
+        public DateTime? PasswordResetTokenExpiry { get; set; }
 
     }
 

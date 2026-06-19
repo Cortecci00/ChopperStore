@@ -39,6 +39,8 @@ import { RecommendationDialogComponent } from './Pages/recommendation/recommenda
 import { ProfileComponent } from './Pages/profile/profile.component';
 import { AdminComponent } from './Pages/admin/admin.component';
 import { CheckoutDialogComponent } from './Pages/cart/checkout-dialog/checkout-dialog.component';
+import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,8 @@ import { CheckoutDialogComponent } from './Pages/cart/checkout-dialog/checkout-d
     ProfileComponent,
     AdminComponent,
     CheckoutDialogComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     MatPaginatorModule,

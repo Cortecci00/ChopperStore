@@ -98,4 +98,18 @@ export class UsersService {
       { token: googleToken }
     );
   }
+
+  forgotPassword(email: string): Observable<Response<null>> {
+    return this.http.post<Response<null>>(
+      `${this._baseUrl}api/Users/forgot-password`,
+      { email }
+    );
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<Response<null>> {
+    return this.http.post<Response<null>>(
+      `${this._baseUrl}api/Users/reset-password`,
+      { token, newPassword }
+    );
+  }
 }
