@@ -24,6 +24,8 @@
     "@angular/platform-server": "^18.1.0",
     "@angular/router": "^18.1.0",
     "@angular/ssr": "^18.1.2",
+    "@capacitor/browser": "^8.0.3",
+    "@capacitor/core": "^8.4.0",
     "@coreui/icons": "^3.0.1",
     "@coreui/icons-angular": "5.2",
     "@types/qrcode": "^1.5.6",

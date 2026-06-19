@@ -57,6 +57,19 @@
 .flex-c {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+@media (max-width: 600px) {
+  .flex-c {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .flex-c span {
+    display: none;
+  }
 }
 
   .rgrid {

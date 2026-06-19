@@ -36,9 +36,9 @@
     <mat-paginator [length]="dataSource.data.length" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Paginador del carrito"></mat-paginator>
   </div>
 
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-left:5%; margin-right:5%; margin-top:1.5em; margin-bottom:4em">
-    <p class="semibold" style="font-size:24px">Total: <span style="color:#D9697D">${{total}}</span></p>
-    <div style="display:flex; gap:1em">
+  <div class="cart-summary">
+    <p class="semibold" style="font-size:24px; margin:0">Total: <span style="color:#D9697D">${{total}}</span></p>
+    <div class="cart-actions">
       <button class="btn shadow" mat-flat-button (click)="clearCart()">Vaciar carrito</button>
       <button style="background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button (click)="checkout()">Finalizar compra</button>
     </div>

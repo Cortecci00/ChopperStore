@@ -1,6 +1,8 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { toDataURL } from 'qrcode';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { CheckoutResult } from '../../../Interfaces';
 import { TransactionService } from '../../../Services/transaction.service';
 
@@ -14,6 +16,7 @@ const POLL_INTERVAL_MS = 3000;
 export class CheckoutDialogComponent implements OnInit, OnDestroy {
   qrDataUrl: string | null = null;
   status: 'pending' | 'approved' | 'rejected' = 'pending';
+  esNativo = Capacitor.isNativePlatform();
   private pollHandle?: ReturnType<typeof setInterval>;
 
   constructor(
@@ -23,8 +26,14 @@ export class CheckoutDialogComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    toDataURL(this.data.checkoutUrl).then((url) => (this.qrDataUrl = url));
+    if (!this.esNativo) {
+      toDataURL(this.data.checkoutUrl).then((url) => (this.qrDataUrl = url));
+    }
     this.pollHandle = setInterval(() => this.checkStatus(), POLL_INTERVAL_MS);
+  }
+
+  abrirMercadoPago() {
+    Browser.open({ url: this.data.checkoutUrl });
   }
 
   ngOnDestroy() {

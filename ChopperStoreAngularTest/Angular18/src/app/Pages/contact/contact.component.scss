@@ -22,12 +22,14 @@
   padding: 10px;
   flex: 45%;
   margin-left: 5%;
+  min-width: 0;
 }
 
 .flex-item-right {
   padding: 10px;
   flex: 45%;
   margin-right: 5%;
+  min-width: 0;
 }
 
 @media (max-width: 1200px) {
@@ -65,10 +67,12 @@
 
 .flex-item-left-input {
   flex: 47%;
+  min-width: 0;
 }
 
 .flex-item-right-input {
   flex: 47%;
+  min-width: 0;
 }
 
 .example-form {
@@ -94,6 +98,22 @@
 
 .space {
     flex: 6%
+}
+
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .flex-item-left-input,
+  .flex-item-right-input {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .space {
+    flex: 0 0 1em;
+  }
 }
 
 .btncontainer {

@@ -27,3 +27,37 @@ mat-paginator {
   background-color: white;
   color: black;
 }
+
+.cart-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 1.5em;
+  margin-bottom: 4em;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.cart-actions {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .cart-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-actions {
+    width: 100%;
+  }
+
+  .cart-actions .btn {
+    flex: 1;
+    min-width: 0;
+  }
+}

@@ -2,14 +2,15 @@
 
 <div mat-dialog-content style="padding:0.5em 1.5em; text-align:center; min-width:320px">
   <div *ngIf="status === 'pending'">
-    <p style="color:#828282">Escaneá el código con la app de Mercado Pago, o tocá el botón para pagar desde esta pantalla.</p>
+    <p *ngIf="!esNativo" style="color:#828282">Escaneá el código con la app de Mercado Pago, o tocá el botón para pagar desde esta pantalla.</p>
+    <p *ngIf="esNativo" style="color:#828282">Tocá el botón para completar el pago con Mercado Pago.</p>
     <div class="qr-frame" *ngIf="qrDataUrl">
       <img [src]="qrDataUrl" style="width:200px; height:200px; display:block;" />
     </div>
     <div style="margin-top:1.5em">
-      <a [href]="data.checkoutUrl" target="_blank" class="mp-btn">
+      <button type="button" class="mp-btn" (click)="abrirMercadoPago()">
         Abrir Mercado Pago
-      </a>
+      </button>
     </div>
     <div class="pending-row">
       <mat-spinner diameter="18"></mat-spinner>
