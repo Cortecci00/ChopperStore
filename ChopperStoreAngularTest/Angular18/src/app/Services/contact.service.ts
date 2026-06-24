@@ -14,8 +14,4 @@ export class ContactService {
   create(dto: ContactMessageCreate): Observable<Response<ContactMessage>> {
     return this.http.post<Response<ContactMessage>>(`${this._baseUrl}api/Contact`, dto);
   }
-
-  getAll(): Observable<Response<ContactMessage[]>> {
-    return this.http.get<Response<ContactMessage[]>>(`${this._baseUrl}api/Contact`);
-  }
 }

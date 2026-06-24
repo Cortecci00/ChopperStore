@@ -50,21 +50,5 @@ namespace ChopperStoreAngularTest.Controllers
                 Result = mensaje
             });
         }
-
-        [Authorize(Policy = "AdminOnly")]
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var mensajes = await _context.contactMessages
-                .OrderByDescending(m => m.createdAt)
-                .ToListAsync();
-
-            return Ok(new Response<IEnumerable<ContactMessage>>
-            {
-                IsSuccess = true,
-                Message = "Listado de mensajes de contacto",
-                Result = mensajes
-            });
-        }
     }
 }

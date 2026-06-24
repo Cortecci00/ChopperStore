@@ -8,7 +8,6 @@ import {
   Response,
   User,
   UserResponse,
-  UsersResponse,
 } from '../Interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -30,11 +29,6 @@ export class UsersService {
   private http = inject(HttpClient);
   constructor() {}
 
-  getUsers(): Observable<UsersResponse> {
-    return this.http.get<UsersResponse>(
-      `${this._baseUrl}api/Users`
-    );
-  }
   getUser(id: string | number): Observable<UserResponse> {
     return this.http.get<UserResponse>(
       `${this._baseUrl}api/Users/${id}`

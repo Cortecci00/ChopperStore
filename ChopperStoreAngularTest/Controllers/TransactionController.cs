@@ -216,22 +216,5 @@ namespace ChopperStoreAngularTest.Controllers
                 Result = transaccion
             });
         }
-
-        [Authorize(Policy = "AdminOnly")]
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var transacciones = await _context.transactions
-                .Include(t => t.items).ThenInclude(ti => ti.skin)
-                .OrderByDescending(t => t.transactionDate)
-                .ToListAsync();
-
-            return Ok(new Response<IEnumerable<Transaction>>
-            {
-                IsSuccess = true,
-                Message = "Listado de todas las transacciones",
-                Result = transacciones
-            });
-        }
     }
 }

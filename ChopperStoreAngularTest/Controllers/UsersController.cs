@@ -213,29 +213,6 @@ namespace ChopperStoreAngularTest.Controllers
             });
         }
 
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult> GetAll()
-        {
-            var usuarios = await _context.users.ToListAsync();
-            if (usuarios.Any())
-            {
-                return Ok(new Response<IEnumerable<User>>
-                {
-                    IsSuccess = true,
-                    Result = usuarios,
-                    Message = "Listado de usuarios"
-                });
-            }
-
-            return Ok(new Response<IEnumerable<User>>
-            {
-                IsSuccess = true,
-                Message = "No hay registros para mostrar",
-                Result = []
-            });
-        }
-
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUpdate model)
