@@ -45,7 +45,18 @@
 
 .mat-card-color {
     background-color:white;
-    
+}
+
+.mat-card-header {
+  overflow: hidden;
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .container {
