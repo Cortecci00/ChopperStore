@@ -20,7 +20,7 @@
         <div mat-card-avatar class="user-avatar" [style.background-image]="rec.usuario.photoUrl ? 'url(' + rec.usuario.photoUrl + ')' : null">
           <span *ngIf="!rec.usuario.photoUrl">{{rec.usuario.username.charAt(0).toUpperCase()}}</span>
         </div>
-        <mat-card-title style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:200px;">{{rec.usuario.username}}</mat-card-title>
+        <mat-card-title>{{truncate(rec.usuario.username)}}</mat-card-title>
       </mat-card-header>
       <mat-card-content class="mat-card-color">
         <p>{{rec.text}}</p>
