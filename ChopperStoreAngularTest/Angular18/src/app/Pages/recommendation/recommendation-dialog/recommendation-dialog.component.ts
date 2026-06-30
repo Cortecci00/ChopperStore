@@ -8,7 +8,7 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrl: './recommendation-dialog.component.scss',
 })
 export class RecommendationDialogComponent {
-  text = new FormControl('', [Validators.required, Validators.maxLength(900)]);
+  text = new FormControl('', [Validators.required, Validators.maxLength(120)]);
 
   constructor(private _dialogRef: MatDialogRef<RecommendationDialogComponent>) {}
 

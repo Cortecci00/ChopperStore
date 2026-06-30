@@ -23,7 +23,7 @@
         <mat-card-title>{{truncate(rec.usuario.username)}}</mat-card-title>
       </mat-card-header>
       <mat-card-content class="mat-card-color">
-        <p>{{truncate(rec.text, 120)}}</p>
+        <p>{{truncateText(rec.text)}}</p>
       </mat-card-content>
       <div *ngIf="canDelete(rec)" style="display:flex; justify-content:flex-end">
         <button mat-icon-button (click)="deleteRecommendation(rec.id)" aria-label="Eliminar">

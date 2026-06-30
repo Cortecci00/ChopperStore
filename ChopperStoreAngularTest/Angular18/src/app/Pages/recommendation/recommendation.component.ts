@@ -73,4 +73,8 @@ export class RecommendationComponent implements OnInit {
   truncate(text: string, max = 10): string {
     return text.length > max ? text.substring(0, max) + '...' : text;
   }
+
+  truncateText(text: string, max = 120): string {
+    return text.length > max ? text.substring(0, max) : text;
+  }
 }
