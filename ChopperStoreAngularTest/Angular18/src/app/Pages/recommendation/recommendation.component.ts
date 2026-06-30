@@ -70,7 +70,7 @@ export class RecommendationComponent implements OnInit {
     this._recommendationService.delete(id).subscribe(() => this.load());
   }
 
-  truncate(text: string, max = 15): string {
+  truncate(text: string, max = 10): string {
     return text.length > max ? text.substring(0, max) + '...' : text;
   }
 }
