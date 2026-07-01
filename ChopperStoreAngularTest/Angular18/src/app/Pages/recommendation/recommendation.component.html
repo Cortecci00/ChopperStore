@@ -15,7 +15,7 @@
   </div>
 
   <div style="margin-top:4em" class="rgrid">
-    <mat-card *ngFor="let rec of recommendations" style="padding: 10px; display:flex; flex-direction:column;" class="example-card mat-card-color shadow">
+    <mat-card *ngFor="let rec of recommendations" style="padding: 10px;" class="example-card mat-card-color shadow">
       <mat-card-header class="mat-card-header">
         <div mat-card-avatar class="user-avatar" [style.background-image]="rec.usuario.photoUrl ? 'url(' + rec.usuario.photoUrl + ')' : null">
           <span *ngIf="!rec.usuario.photoUrl">{{rec.usuario.username.charAt(0).toUpperCase()}}</span>

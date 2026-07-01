@@ -33,6 +33,15 @@
   overflow: hidden;
 }
 
+::ng-deep .example-card.mat-mdc-card {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+::ng-deep .example-card .mat-mdc-card-content {
+  flex: 1 !important;
+}
+
 .user-avatar {
   background-color: #D9697D;
   background-size: cover;
