@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './Interceptors/auth.interceptor';
@@ -85,6 +86,7 @@ import { PaymentReturnComponent } from './Pages/payment-return/payment-return.co
     MatSnackBarModule,
     MatBadgeModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule

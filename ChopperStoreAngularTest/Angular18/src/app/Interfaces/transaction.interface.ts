@@ -14,7 +14,7 @@ export interface TransactionItem {
 export interface Transaction {
   id: number;
   userId: number;
-  user: { id: number; email: string; username: string } | null;
+  user: { id: number; email: string; username: string; steamTradeUrl?: string | null } | null;
   items: TransactionItem[];
   totalPrice: number;
   transactionDate: string;

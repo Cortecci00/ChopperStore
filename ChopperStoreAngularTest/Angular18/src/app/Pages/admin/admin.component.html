@@ -139,6 +139,18 @@
               <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef>Usuario</th>
               <td style="color:black" mat-cell *matCellDef="let t">{{t.user?.email ?? t.userId}}</td>
             </ng-container>
+            <ng-container matColumnDef="tradeUrl">
+              <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef>Trade URL</th>
+              <td mat-cell *matCellDef="let t" style="white-space:nowrap">
+                <ng-container *ngIf="t.user?.steamTradeUrl">
+                  <a [href]="t.user.steamTradeUrl" target="_blank" style="color:#1565c0; font-size:13px; margin-right:6px">Trade link</a>
+                  <button mat-icon-button style="width:28px; height:28px; line-height:28px" (click)="copyTradeUrl(t.user.steamTradeUrl)" matTooltip="Copiar Trade URL">
+                    <mat-icon style="font-size:16px; width:16px; height:16px; line-height:16px">content_copy</mat-icon>
+                  </button>
+                </ng-container>
+                <span *ngIf="!t.user?.steamTradeUrl" style="color:#999; font-size:12px">Sin URL</span>
+              </td>
+            </ng-container>
             <ng-container matColumnDef="items">
               <th class="bold" style="color:black" mat-header-cell *matHeaderCellDef>Productos</th>
               <td style="color:black" mat-cell *matCellDef="let t">{{getItemNames(t)}}</td>

@@ -31,7 +31,7 @@ export class AdminComponent implements OnInit {
   loadingSteamInventory = false;
 
   transactionsDataSource = new MatTableDataSource<Transaction>([]);
-  transactionColumns = ['date', 'user', 'items', 'total', 'status', 'actions'];
+  transactionColumns = ['date', 'user', 'tradeUrl', 'items', 'total', 'status', 'actions'];
 
   @ViewChild('skinPhotoInput') skinPhotoInput!: ElementRef<HTMLInputElement>;
 
@@ -215,6 +215,12 @@ export class AdminComponent implements OnInit {
         this._snackBar.open('Marcada como entregada', 'Cerrar', { duration: 2000, panelClass: ['snackbar-success'] });
       },
       error: this.onError,
+    });
+  }
+
+  copyTradeUrl(url: string) {
+    navigator.clipboard.writeText(url).then(() => {
+      this._snackBar.open('Trade URL copiada', 'Cerrar', { duration: 2000 });
     });
   }
 
