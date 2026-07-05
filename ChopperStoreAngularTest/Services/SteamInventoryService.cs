@@ -122,17 +122,22 @@ namespace ChopperStoreAngularTest.Services
                 var inspectAction = description.Actions?.FirstOrDefault(a => a.Name.Contains("Inspect", StringComparison.OrdinalIgnoreCase));
                 if (inspectAction != null)
                 {
-                    string? dParam = null;
-                    if (propertiesByAssetId.TryGetValue(asset.AssetId, out var itemProps))
-                        dParam = itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.IntValue
-                               ?? itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.FloatValue;
+                    var link = inspectAction.Link
+                        .Replace("%owner_steamid%", steamId64.ToString())
+                        .Replace("%assetid%", asset.AssetId);
 
-                    if (dParam != null)
+                    if (link.Contains("%d_param%"))
                     {
-                        inspectLink = inspectAction.Link
-                            .Replace("%owner_steamid%", steamId64.ToString())
-                            .Replace("%assetid%", asset.AssetId)
-                            .Replace("%d_param%", dParam);
+                        string? dParam = null;
+                        if (propertiesByAssetId.TryGetValue(asset.AssetId, out var itemProps))
+                            dParam = itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.IntValue
+                                   ?? itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.FloatValue;
+                        if (dParam != null)
+                            inspectLink = link.Replace("%d_param%", dParam);
+                    }
+                    else
+                    {
+                        inspectLink = link;
                     }
                 }
 
