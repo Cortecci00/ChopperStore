@@ -2,10 +2,12 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Category, Skin, SteamInventoryItem } from '../../Interfaces';
+import { MatTableDataSource } from '@angular/material/table';
+import { Category, Skin, SteamInventoryItem, Transaction } from '../../Interfaces';
 import { CategoryService } from '../../Services/category.service';
 import { SkinService } from '../../Services/skin.service';
 import { SteamService } from '../../Services/steam.service';
+import { TransactionService } from '../../Services/transaction.service';
 
 const MAX_PHOTO_SIZE_BYTES = 2 * 1024 * 1024;
 
@@ -28,6 +30,9 @@ export class AdminComponent implements OnInit {
   steamItems: SteamInventoryItem[] = [];
   loadingSteamInventory = false;
 
+  transactionsDataSource = new MatTableDataSource<Transaction>([]);
+  transactionColumns = ['date', 'user', 'items', 'total', 'status', 'actions'];
+
   @ViewChild('skinPhotoInput') skinPhotoInput!: ElementRef<HTMLInputElement>;
 
   constructor(
@@ -35,6 +40,7 @@ export class AdminComponent implements OnInit {
     private _categoryService: CategoryService,
     private _skinService: SkinService,
     private _steamService: SteamService,
+    private _transactionService: TransactionService,
     private _snackBar: MatSnackBar
   ) {
     this.formCategory = this._fb.group({
@@ -49,12 +55,14 @@ export class AdminComponent implements OnInit {
       price: [0, [Validators.required, Validators.min(0)]],
       categoryId: [null, Validators.required],
       photoUrl: [null],
+      inspectLink: [null],
     });
   }
 
   ngOnInit() {
     this.loadCategories();
     this.loadSkins();
+    this.loadTransactions();
   }
 
   loadCategories() {
@@ -114,7 +122,7 @@ export class AdminComponent implements OnInit {
 
   editSkin(s: Skin) {
     this.editingSkinId = s.id;
-    this.formSkin.patchValue({ ...s, categoryId: s.category?.id });
+    this.formSkin.patchValue({ ...s, categoryId: s.category?.id, inspectLink: s.inspectLink ?? null });
     this.skinPhotoPreview = s.photoUrl ?? null;
   }
 
@@ -173,9 +181,45 @@ export class AdminComponent implements OnInit {
       skinFloat: item.skinFloat ?? 0,
       pattern: item.pattern ?? 0,
       photoUrl: item.photoUrl ?? null,
+      inspectLink: item.inspectLink ?? null,
     });
     this.skinPhotoPreview = item.photoUrl ?? null;
     this.selectedTabIndex = 1;
+  }
+
+  loadTransactions() {
+    this._transactionService.getAll().subscribe({
+      next: (r) => (this.transactionsDataSource.data = r.result),
+      error: this.onError,
+    });
+  }
+
+  getTransactionStatus(t: Transaction): string {
+    if (t.paymentStatus === 'rejected') return 'Rechazado';
+    if (t.paymentStatus === 'pending') return 'Pago pendiente';
+    if (t.deliveryStatus === 'delivered') return 'Entregado';
+    return 'Esperando entrega';
+  }
+
+  getStatusColor(t: Transaction): string {
+    if (t.paymentStatus === 'rejected') return '#c62828';
+    if (t.paymentStatus === 'pending') return '#b8860b';
+    if (t.deliveryStatus === 'delivered') return '#2e7d32';
+    return '#1565c0';
+  }
+
+  markDelivered(t: Transaction) {
+    this._transactionService.markDelivered(t.id).subscribe({
+      next: () => {
+        t.deliveryStatus = 'delivered';
+        this._snackBar.open('Marcada como entregada', 'Cerrar', { duration: 2000, panelClass: ['snackbar-success'] });
+      },
+      error: this.onError,
+    });
+  }
+
+  getItemNames(t: Transaction): string {
+    return t.items.map(i => i.skinName).join(', ');
   }
 
   deleteSkin(id: number) {

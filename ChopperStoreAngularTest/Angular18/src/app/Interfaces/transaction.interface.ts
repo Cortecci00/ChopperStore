@@ -14,11 +14,12 @@ export interface TransactionItem {
 export interface Transaction {
   id: number;
   userId: number;
-  user: null;
+  user: { id: number; email: string; username: string } | null;
   items: TransactionItem[];
   totalPrice: number;
   transactionDate: string;
   paymentStatus: 'pending' | 'approved' | 'rejected';
+  deliveryStatus: 'waiting' | 'delivered';
 }
 
 export interface CheckoutResult {

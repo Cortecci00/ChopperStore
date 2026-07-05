@@ -22,4 +22,12 @@ export class TransactionService {
   getById(id: number): Observable<Response<Transaction>> {
     return this.http.get<Response<Transaction>>(`${this._baseUrl}api/Transaction/${id}`);
   }
+
+  getAll(): Observable<Response<Transaction[]>> {
+    return this.http.get<Response<Transaction[]>>(`${this._baseUrl}api/Transaction/all`);
+  }
+
+  markDelivered(id: number): Observable<Response<string>> {
+    return this.http.put<Response<string>>(`${this._baseUrl}api/Transaction/${id}/deliver`, {});
+  }
 }

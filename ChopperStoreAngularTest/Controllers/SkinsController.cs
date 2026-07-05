@@ -120,7 +120,8 @@ namespace ChopperStoreAngularTest.Controllers
                 rarity = model.rarity,
                 price = model.price,
                 category = categoria,
-                PhotoUrl = model.photoUrl
+                PhotoUrl = model.photoUrl,
+                InspectLink = model.inspectLink
             };
 
             await _context.skins.AddAsync(skin);
@@ -177,6 +178,7 @@ namespace ChopperStoreAngularTest.Controllers
             skin.price = model.price;
             skin.category = categoria;
             if (model.photoUrl != null) skin.PhotoUrl = model.photoUrl;
+            skin.InspectLink = model.inspectLink;
 
             await _context.SaveChangesAsync();
 

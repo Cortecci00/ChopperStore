@@ -118,6 +118,24 @@ namespace ChopperStoreAngularTest.Services
                     name = name[..^$"({exterior})".Length].TrimEnd();
                 }
 
+                string? inspectLink = null;
+                var inspectAction = description.Actions?.FirstOrDefault(a => a.Name.Contains("Inspect", StringComparison.OrdinalIgnoreCase));
+                if (inspectAction != null)
+                {
+                    string? dParam = null;
+                    if (propertiesByAssetId.TryGetValue(asset.AssetId, out var itemProps))
+                        dParam = itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.IntValue
+                               ?? itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.FloatValue;
+
+                    if (dParam != null)
+                    {
+                        inspectLink = inspectAction.Link
+                            .Replace("%owner_steamid%", steamId64.ToString())
+                            .Replace("%assetid%", asset.AssetId)
+                            .Replace("%d_param%", dParam);
+                    }
+                }
+
                 items.Add(new SteamInventoryItemDto
                 {
                     AssetId = asset.AssetId,
@@ -129,7 +147,8 @@ namespace ChopperStoreAngularTest.Services
                     SkinFloat = skinFloat,
                     Pattern = pattern,
                     FloatDisponible = skinFloat != null,
-                    Tradable = description.Tradable == 1
+                    Tradable = description.Tradable == 1,
+                    InspectLink = inspectLink
                 });
             }
 
@@ -182,6 +201,18 @@ namespace ChopperStoreAngularTest.Services
 
             [JsonPropertyName("tags")]
             public List<SteamTag>? Tags { get; set; }
+
+            [JsonPropertyName("actions")]
+            public List<SteamAction>? Actions { get; set; }
+        }
+
+        private class SteamAction
+        {
+            [JsonPropertyName("link")]
+            public string Link { get; set; } = "";
+
+            [JsonPropertyName("name")]
+            public string Name { get; set; } = "";
         }
 
         private class SteamTag

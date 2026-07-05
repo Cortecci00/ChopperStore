@@ -90,11 +90,17 @@ export class CartComponent implements OnInit, AfterViewInit {
           }
         });
       },
-      error: () =>
-        this._snackBar.open('No se pudo iniciar el pago', 'Cerrar', {
-          duration: 3000,
+      error: (err) => {
+        const msg = err.error?.message ?? 'No se pudo iniciar el pago';
+        const isMissingTradeUrl = msg.toLowerCase().includes('trade');
+        const snackRef = this._snackBar.open(msg, isMissingTradeUrl ? 'Ir al perfil' : 'Cerrar', {
+          duration: isMissingTradeUrl ? 8000 : 3000,
           panelClass: ['snackbar-error'],
-        }),
+        });
+        if (isMissingTradeUrl) {
+          snackRef.onAction().subscribe(() => this._router.navigate(['/profile']));
+        }
+      },
     });
   }
 }

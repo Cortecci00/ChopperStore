@@ -9,6 +9,7 @@ export interface Skin {
   price: number;
   category: Category;
   photoUrl?: string | null;
+  inspectLink?: string | null;
 }
 
 export interface SkinCreateUpdate {
@@ -19,4 +20,5 @@ export interface SkinCreateUpdate {
   price: number;
   categoryId: number;
   photoUrl?: string | null;
+  inspectLink?: string | null;
 }

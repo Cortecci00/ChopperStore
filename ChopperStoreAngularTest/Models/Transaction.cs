@@ -11,6 +11,7 @@
         public string PaymentStatus { get; set; } = "pending";
         public string? MercadoPagoPreferenceId { get; set; }
         public string? MercadoPagoPaymentId { get; set; }
+        public string DeliveryStatus { get; set; } = "waiting";
 
     }
 }

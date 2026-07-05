@@ -11,6 +11,7 @@ namespace ChopperStoreAngularTest.Models
         public double price { get; set; }
         public Category category { get; set; }
         public string? PhotoUrl { get; set; }
+        public string? InspectLink { get; set; }
 
     }
 }

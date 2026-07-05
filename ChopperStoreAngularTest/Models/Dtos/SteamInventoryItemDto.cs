@@ -12,5 +12,6 @@ namespace ChopperStoreAngularTest.Models.Dtos
         public int? Pattern { get; set; }
         public bool FloatDisponible { get; set; }
         public bool Tradable { get; set; }
+        public string? InspectLink { get; set; }
     }
 }

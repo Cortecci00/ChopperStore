@@ -28,8 +28,11 @@
         <p class="product-detail-line" style="color:#828282">{{skin.rarity}} · {{skin.category.name}}</p>
         <p class="product-detail-line semibold" style="font-size:20px; color:#D9697D">${{skin.price}}</p>
       </mat-card-content>
-      <div class="product-action">
-        <button style="background-color: #D9697D; color: white;" class="btn" mat-flat-button (click)="addToCart(skin, $event)">Agregar al carrito</button>
+      <div class="product-action" style="display:flex; gap:8px; flex-wrap:wrap">
+        <a *ngIf="skin.inspectLink" [href]="skin.inspectLink" target="_blank" mat-stroked-button class="btn inspect-btn" (click)="$event.stopPropagation()">
+          <mat-icon style="font-size:18px; height:18px; width:18px; margin-right:4px">visibility</mat-icon>Ver en juego
+        </a>
+        <button style="background-color: #D9697D; color: white; flex:1" class="btn" mat-flat-button (click)="addToCart(skin, $event)">Agregar al carrito</button>
       </div>
     </mat-card>
   </div>

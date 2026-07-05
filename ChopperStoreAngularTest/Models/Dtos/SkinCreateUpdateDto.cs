@@ -20,5 +20,6 @@ namespace ChopperStoreAngularTest.Models.Dtos
         public int categoryId { get; set; }
 
         public string? photoUrl { get; set; }
+        public string? inspectLink { get; set; }
     }
 }

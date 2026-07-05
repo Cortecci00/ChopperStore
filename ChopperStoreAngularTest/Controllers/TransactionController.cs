@@ -27,9 +27,55 @@ namespace ChopperStoreAngularTest.Controllers
         private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         private bool IsAdmin => User.FindFirstValue("isAdmin") == "true";
 
+        [Authorize(Policy = "AdminOnly")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var transacciones = await _context.transactions
+                .Include(t => t.items)
+                .Include(t => t.user)
+                .OrderByDescending(t => t.transactionDate)
+                .ToListAsync();
+
+            return Ok(new Response<IEnumerable<Transaction>>
+            {
+                IsSuccess = true,
+                Message = "Todas las transacciones",
+                Result = transacciones
+            });
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpPut("{id}/deliver")]
+        public async Task<IActionResult> MarkDelivered(int id)
+        {
+            var transaction = await _context.transactions.FindAsync(id);
+            if (transaction == null)
+                return NotFound(new Response<string> { IsSuccess = false, Message = "Transacción no encontrada" });
+
+            if (transaction.PaymentStatus != "approved")
+                return BadRequest(new Response<string> { IsSuccess = false, Message = "Solo se pueden marcar como entregadas transacciones con pago aprobado" });
+
+            transaction.DeliveryStatus = "delivered";
+            await _context.SaveChangesAsync();
+
+            return Ok(new Response<string> { IsSuccess = true, Message = "Marcada como entregada" });
+        }
+
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout()
         {
+            var user = await _context.users.FindAsync(CurrentUserId);
+            if (string.IsNullOrWhiteSpace(user?.SteamTradeUrl))
+            {
+                return BadRequest(new Response<string>
+                {
+                    IsSuccess = false,
+                    Message = "Debés configurar tu Steam Trade URL en tu perfil antes de comprar.",
+                    Result = null
+                });
+            }
+
             var cart = await _context.shoppingcarts
                 .Include(c => c.items).ThenInclude(i => i.skin)
                 .FirstOrDefaultAsync(c => c.UserId == CurrentUserId);

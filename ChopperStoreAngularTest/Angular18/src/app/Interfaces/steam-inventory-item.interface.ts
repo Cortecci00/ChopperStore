@@ -9,4 +9,5 @@ export interface SteamInventoryItem {
   pattern?: number | null;
   floatDisponible: boolean;
   tradable: boolean;
+  inspectLink?: string | null;
 }
