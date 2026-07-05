@@ -126,19 +126,28 @@ namespace ChopperStoreAngularTest.Services
                         .Replace("%owner_steamid%", steamId64.ToString())
                         .Replace("%assetid%", asset.AssetId);
 
+                    // Resolve %propid:N% placeholders (CS2 new format)
+                    if (propertiesByAssetId.TryGetValue(asset.AssetId, out var itemProps) && itemProps != null)
+                    {
+                        foreach (var prop in itemProps)
+                        {
+                            var val = prop.AnyValue;
+                            if (val != null)
+                                link = link.Replace($"%propid:{prop.PropertyId}%", val);
+                        }
+                    }
+
+                    // Resolve legacy %d_param% placeholder
                     if (link.Contains("%d_param%"))
                     {
-                        string? dParam = null;
-                        if (propertiesByAssetId.TryGetValue(asset.AssetId, out var itemProps))
-                            dParam = itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.IntValue
-                                   ?? itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.FloatValue;
+                        var dParam = itemProps?.FirstOrDefault(p => p.PropertyId == 4)?.AnyValue;
                         if (dParam != null)
-                            inspectLink = link.Replace("%d_param%", dParam);
+                            link = link.Replace("%d_param%", dParam);
                     }
-                    else
-                    {
-                        inspectLink = link;
-                    }
+
+                    var hasUnresolved = link.Contains("%propid:") || link.Contains("%owner_steamid%")
+                        || link.Contains("%assetid%") || link.Contains("%d_param%");
+                    inspectLink = hasUnresolved ? null : link;
                 }
 
                 items.Add(new SteamInventoryItemDto
@@ -251,6 +260,11 @@ namespace ChopperStoreAngularTest.Services
 
             [JsonPropertyName("float_value")]
             public string? FloatValue { get; set; }
+
+            [JsonPropertyName("string_value")]
+            public string? StringValue { get; set; }
+
+            public string? AnyValue => StringValue ?? IntValue ?? FloatValue;
         }
     }
 }
