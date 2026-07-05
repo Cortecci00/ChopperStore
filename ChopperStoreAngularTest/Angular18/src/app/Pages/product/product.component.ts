@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Skin } from '../../Interfaces';
 import { SkinService } from '../../Services/skin.service';
 import { ShoppingCartService } from '../../Services/shopping-cart.service';
@@ -21,8 +22,14 @@ export class ProductComponent implements OnInit {
     private _cartService: ShoppingCartService,
     private _authService: AuthServiceTsService,
     private _router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _sanitizer: DomSanitizer
   ) {}
+
+  getSafeInspectUrl(url: string | null | undefined): SafeUrl | null {
+    if (!url) return null;
+    return this._sanitizer.bypassSecurityTrustUrl(url);
+  }
 
   ngOnInit() {
     const id = Number(this._route.snapshot.paramMap.get('id'));

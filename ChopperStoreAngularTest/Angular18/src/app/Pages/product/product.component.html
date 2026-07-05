@@ -13,7 +13,10 @@
       <p style="color:#828282">Float: {{skin.skinFloat}} · Patrón: {{skin.pattern}}</p>
       <p class="semibold" style="font-size:28px; color:#D9697D; margin-top:1em">${{skin.price}}</p>
 
-      <div style="margin-top:1em">
+      <div style="margin-top:1em; display:flex; flex-direction:column; gap:10px; align-items:flex-start">
+        <a *ngIf="skin.inspectLink" [href]="getSafeInspectUrl(skin.inspectLink)" target="_blank" mat-stroked-button class="btn inspect-btn" style="display:inline-flex; align-items:center">
+          <mat-icon style="font-size:18px; height:18px; width:18px; margin-right:4px">visibility</mat-icon>Ver en juego
+        </a>
         <button style="background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button (click)="addToCart()">Agregar al carrito</button>
       </div>
     </div>
