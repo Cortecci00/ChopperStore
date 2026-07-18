@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local dev tools / sesiones temporales
+.playwright-mcp/
+ChopperStoreAngularTest/Angular18/proxy.conf.json
+
+# Configuracion de produccion con credenciales (no subir a GitHub)
+**/appsettings.Production.json
