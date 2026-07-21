@@ -49,6 +49,12 @@
     <mat-form-field appearance="outline" class="example-full-width" style="min-width:350px">
       <mat-label style="color: #828282">Pegá tu Trade URL de Steam</mat-label>
       <input style="color: #828282" matInput formControlName="steamTradeUrl" />
+      <mat-error *ngIf="formSteam.get('steamTradeUrl')?.hasError('required')">
+        La Trade URL es obligatoria
+      </mat-error>
+      <mat-error *ngIf="formSteam.get('steamTradeUrl')?.hasError('invalidTradeUrl')">
+        La URL no es válida. Debe tener el formato: steamcommunity.com/tradeoffer/new/?partner=...&token=...
+      </mat-error>
     </mat-form-field>
     <button type="submit" style="background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button [disabled]="formSteam.invalid">Guardar Trade URL</button>
   </form>

@@ -7,6 +7,7 @@ import { Transaction, User } from '../../Interfaces';
 import { UsersService } from '../../Services/users.service';
 import { AuthServiceTsService } from '../../Services/auth.service.ts.service';
 import { TransactionService } from '../../Services/transaction.service';
+import { steamTradeUrlValidator } from '../../Validators/steam-trade-url.validator';
 
 const MAX_PHOTO_SIZE_BYTES = 2 * 1024 * 1024;
 
@@ -43,7 +44,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     });
 
     this.formSteam = this._fb.group({
-      steamTradeUrl: ['', Validators.required],
+      steamTradeUrl: ['', [Validators.required, steamTradeUrlValidator]],
     });
   }
 
