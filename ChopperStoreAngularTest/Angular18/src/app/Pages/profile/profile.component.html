@@ -43,20 +43,21 @@
   </div>
 </div>
 
-<div style="margin-top:4em; display:flex; justify-content:center">
-  <form [formGroup]="formSteam" (ngSubmit)="saveSteamTradeUrl()" style="display:flex; flex-direction:column; align-items:center;">
-    <p class="semibold">Steam Trade URL</p>
-    <mat-form-field appearance="outline" class="example-full-width" style="min-width:350px">
+<div style="margin-top:4em; display:flex; flex-direction:column; align-items:center;">
+  <form [formGroup]="formSteam" (ngSubmit)="saveSteamTradeUrl()" style="width:100%; max-width:450px;">
+    <p class="semibold" style="text-align:center;">Steam Trade URL</p>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" style="width:100%;">
       <mat-label style="color: #828282">Pegá tu Trade URL de Steam</mat-label>
       <input style="color: #828282" matInput formControlName="steamTradeUrl" />
-      <mat-error *ngIf="formSteam.get('steamTradeUrl')?.hasError('required')">
-        La Trade URL es obligatoria
-      </mat-error>
-      <mat-error *ngIf="formSteam.get('steamTradeUrl')?.hasError('invalidTradeUrl')">
-        La URL no es válida. Debe tener el formato: steamcommunity.com/tradeoffer/new/?partner=...&token=...
-      </mat-error>
     </mat-form-field>
-    <button type="submit" style="background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button [disabled]="formSteam.invalid">Guardar Trade URL</button>
+    <div *ngIf="formSteam.get('steamTradeUrl')?.touched"
+         style="display:block; color:#f44336; font-size:12px; line-height:1.5; padding:2px 16px 8px;">
+      <ng-container *ngIf="formSteam.get('steamTradeUrl')?.hasError('required')">La Trade URL es obligatoria</ng-container>
+      <ng-container *ngIf="formSteam.get('steamTradeUrl')?.hasError('invalidTradeUrl')">Formato inválido. Copiá la URL desde Steam → Privacidad → Trade URL</ng-container>
+    </div>
+    <div style="display:flex; justify-content:center; margin-top:8px;">
+      <button type="submit" style="background-color: #D9697D; color: white;" class="btn shadow" mat-flat-button [disabled]="formSteam.invalid">Guardar Trade URL</button>
+    </div>
   </form>
 </div>
 
