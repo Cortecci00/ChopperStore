@@ -441,7 +441,7 @@ namespace ChopperStoreAngularTest.Controllers
             });
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize]
         [HttpPut("{id}/steam-trade-url")]
         public async Task<IActionResult> PutSteamTradeUrl(int id, [FromBody] UpdateSteamTradeUrlDto model)
         {
